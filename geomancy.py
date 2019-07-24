@@ -6,12 +6,32 @@ import sys
 import random
 from time import strftime
 
-# Frequently used strings. You may replace the 'x' with 'o' if you want.
-s = " "
+######################################################
+########## These strings are safe to modify ##########
+######################################################
+log_file = "geomancy.log"
+# p and k are used to display the figures. p=1; k=2
 p = " x "
 k = "x x"
-CurrentTime = strftime("%Y-%m-%d (%a) %H:%M:%S")
-# New line character for logging
+# They can be changed to whatever symbol you like, e.g.
+#p = " o "
+#k = "o o"
+######################################################
+######################################################
+
+# List of figures unfit to be Judge
+Laetitia = [p, k, k, k]
+Tristitia = Laetitia.reverse()
+Puer = [p, p, k, p]
+Puella = Puer.reverse()
+Albus = [k, k, p, k]
+Rubeus = Albus.reverse()
+Caput = [k, p, p, p]
+Cauda = Caput.reverse()
+InvalidJudges = [Laetitia, Tristitia, Puer, Puella, Albus, Rubeus, Caput, Cauda]
+
+s = " " # whitespace character for layout
+# Platform-dependent new line for log file
 nl = "\n"
 if platform.system() == "Windows":
     nl = "\r\n"
@@ -26,7 +46,8 @@ DESCRIPTION
     By default, this script generates a geomantic shield chart and logs it into
     a plain text file named 'geomancy.log' along with time stamp.
 
-    -m, --med           Generate house chart with medieval arrangement.
+    -i, --interactive   Ask user prompt before generating charts.
+    -m, --medieval      Generate house chart with medieval arrangement.
     -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
     -d, --dual          Generate both shield chart and house chart.
     -q, --quiet         Disable logging except for errors.
@@ -58,7 +79,8 @@ HOUSE CHART LAYOUT
 Chart = "Shield"
 Double = False
 Logging = True
-if "-m" in sys.argv or "--med" in sys.argv:
+Interactive = False
+if "-m" in sys.argv or "--medieval" in sys.argv:
     Chart = "Medieval house"
 if "-a" in sys.argv or "--agrippa" in sys.argv:
     Chart = "Agrippa house"
@@ -70,18 +92,37 @@ if "-h" in sys.argv or "--help" in sys.argv:
     print(Help)
     quit()
 
-# List of figures unfit to be Judge
-Laetitia = [p, k, k, k]
-Tristitia = Laetitia.reverse()
-Puer = [p, p, k, p]
-Puella = Puer.reverse()
-Albus = [k, k, p, k]
-Rubeus = Albus.reverse()
-Caput = [k, p, p, p]
-Cauda = Caput.reverse()
-InvalidJudges = [Laetitia, Tristitia, Puer, Puella, Albus, Rubeus, Caput, Cauda]
+######################################
+########## Interactive mode ##########
+######################################
 
-# Generate the Mothers and transpose to create Daughters
+if "-i" in sys.argv or "--interactive" in sys.argv:
+    Interactive = True
+    print("=========================\nGeomantic Chart Generator\n=========================\n")
+    querent = input("Name  : ")
+    query = input("Query : ")
+    print("\nSelect chart type (default is 1):")
+    print("1 Shield chart")
+    print("2 Medieval house chart")
+    print("3 Agrippa house chart")
+    asktype = input("# ")
+    if asktype == "2":
+        Chart = "Medieval house"
+    elif asktype == "3":
+        Chart = "Agrippa house"
+    else:
+        Chart = "Shield"
+    confirm_log = input("Write to log file? Default is y [y/n] ")
+    if confirm_log == "n" or confirm_log == "N":
+        Logging = False
+    else:
+        Logging = True
+    
+##################################################
+########## Chart processing starts here ##########
+##################################################
+
+CurrentTime = strftime("%Y-%m-%d (%a) %H:%M:%S")
 RawData = []
 for x in range(16):
     RawData.append(random.choice([p, k]))
@@ -157,24 +198,29 @@ if Chart == "Agrippa house":
 # ---NI4---NI3------NI2-----NI1
 # ------WI1--------------WI2
 # --------------JUD-----------REC
+
 def drawShield():
     print("="*60)
-    print("Shield chart generated at", CurrentTime)
+    print("Shield chart generated at " + CurrentTime)
     print("="*60)
     for x in range(4):
-        print(DaughterD[x], s*3, DaughterC[x], s*3, DaughterB[x], s*3, DaughterA[x], s*3, MotherD[x], s*3, MotherC[x], s*3, MotherB[x], s*3, MotherA[x])
+        print(DaughterD[x] + s*5 + DaughterC[x] + s*5 + DaughterB[x] + s*5 + DaughterA[x] + s*5 + MotherD[x] + s*5 + MotherC[x] + s*5 + MotherB[x] + s*5 + MotherA[x])
     print("\n")
     for x in range(4):
-        print(s*3, NieceD[x], s*11, NieceC[x], s*11, NieceB[x], s*11, NieceA[x])
+        print(s*4 + NieceD[x] + s*13 + NieceC[x] + s*13 + NieceB[x] + s*13 + NieceA[x])
     print("\n")
     for x in range(4):
-        print(s*11, WitnessB[x], s*27, WitnessA[x])
+        print(s*12 + WitnessB[x] + s*29 + WitnessA[x])
     print("\n")
     for x in range(4):
-        print(s*28, Judge[x], s*23, Reconciler[x])
+        print(s*29 + Judge[x] + s*25 + Reconciler[x])
 
 def logShield():
-    log = open("geomancy.log", "a+")
+    log = open(log_file, "a+")
+    if Interactive:
+        log.write("="*60 + nl)
+        log.write("Name  : " + querent + nl)
+        log.write("Query : " + query + nl)
     log.write("="*60 + nl)
     log.write("Shield chart generated at " + CurrentTime + nl)
     log.write("="*60 + nl)
@@ -198,27 +244,32 @@ def logShield():
 #MO1#---#---#---#DA3#|#-----------#
 #MO2#---#---#---#DA2#|#---#REC#---#
 #---#MO3#MO4#DA1#---#|
+
 def drawHouse():
     print("="*60)
-    print(Chart, "chart generated at", CurrentTime)
+    print(Chart + " chart generated at " + CurrentTime)
     print("="*60)
     for x in range(4):
-        print(s*6, House11[x], s*4, House10[x], s*4, House9[x], s*9, " | ", s*2, WitnessB[x], s*6, WitnessA[x])
-    print(s*39, "|")
+        print(s*7 + House11[x] + s*6 + House10[x] + s*6 + House9[x] + s*11 + " | " + s*4 + WitnessB[x] + s*8 + WitnessA[x])
+    print(s*40 + "|")
     for x in range(4):
-        print(House12[x], s*27, House8[x], s*2, " | ", s*8, Judge[x])
-    print(s*39, "|")
+        print(House12[x] + s*29 + House8[x] + s*4 + " | " + s*10 + Judge[x])
+    print(s*40 + "|")
     for x in range(4):
-        print(House1[x], s*27, House7[x], s*2, " | ", s*8, Reconciler[x])
-    print(s*39, "|")
+        print(House1[x] + s*29 + House7[x] + s*4 + " | " + s*10 + Reconciler[x])
+    print(s*40 + "|")
     for x in range(4):
-        print(House2[x], s*27, House6[x], s*2, " | ")
-    print(s*39, "|")
+        print(House2[x] + s*29 + House6[x] + s*4 + " | ")
+    print(s*40 + "|")
     for x in range(4):
-        print(s*6, House3[x], s*4, House4[x], s*4, House5[x], s*9, " | ")
+        print(s*7 + House3[x] + s*6 + House4[x] + s*6 + House5[x] + s*11 + " | ")
 
 def logHouse():
-    log = open("geomancy.log", "a+")
+    log = open(log_file, "a+")
+    if Interactive:
+        log.write("="*60 + nl)
+        log.write("Name  : " + querent + nl)
+        log.write("Query : " + query + nl)
     log.write("="*60 + nl)
     log.write(Chart + " chart generated at " + CurrentTime + nl)
     log.write("="*60 + nl)
@@ -238,7 +289,10 @@ def logHouse():
         log.write(s*7 + House3[x] + s*6 + House4[x] + s*6 + House5[x] + s*11 + " | " + nl)
     log.close()
 
-# Script output
+###################################
+########## Script output ##########
+###################################
+
 if Double:
     drawShield()
     if Logging:
@@ -261,7 +315,7 @@ else:
 # This error should be impossible to trigger.
 if Judge in InvalidJudges:
     print("[ERROR] Judge is invalid figure! This script is broken :(")
-    log = open("geomancy.log", "a+")
+    log = open(log_file, "a+")
     log.write(nl + "[ERROR] Judge is invalid figure! This script is broken :(" + nl)
     log.close()
 
