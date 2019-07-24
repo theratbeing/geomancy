@@ -7,22 +7,14 @@ Launch it from the terminal/command line with `python3 geomancy.py`.
 Using `python3 geomancy.py -h` will show you the help screen (or just read the source code -- it's short!).
 
 ## Features
-* Interactive mode
+**Interactive mode:** the script asks for querent name, the query, and chart type before generating a chart. (Added in 2019-07-24)
 
-(Added in 2019-07-24) The script asks for querent name, the query, and chart type before generating a chart.
+**Traditional shield chart** including the Reconciler.
 
-* Traditional shield chart including the Reconciler
+**Medieval-style simple house chart:** figures are placed following the order of their generation.
 
-* Medieval-style simple house chart
+**Agrippa/Golden Dawn house chart:** Mothers are placed in angular houses, Daughters are placed in succedent houses, Nieces are placed in cadent houses.
 
-Figures are placed following the order of their generation.
+**Automatic logging:** output will be automatically written to a file specified in `log_file`.
 
-* Agrippa/Golden Dawn house chart
-
-Mothers are placed in angular houses, Daughters are placed in succedent houses, Nieces are placed in cadent houses.
-
-* Automatic logging
-
-Output will be automatically written to a file specified in `log_file`.
-
-Note: this script does not provide interpretation for the reading.
+*Note: this script does not provide interpretation for the reading.*
