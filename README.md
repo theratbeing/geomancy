@@ -4,9 +4,11 @@ Python3 script to generate geomantic divination charts.
 ## How to use
 Launch it from the terminal/command line with `python3 geomancy.py`.
 
-Using `python3 geomancy.py -h` will show you the help screen (or just read the source code -- it's short!).
+Using `python3 geomancy.py -h` will show you the help screen.
 
 ## Features
+**Colorful figures:** figures have different color depending on its correspondence and the chart type. (Added in 2019-07-31)
+
 **Interactive mode:** the script asks for querent name, the query, and chart type before generating a chart. (Added in 2019-07-24)
 
 **Traditional shield chart** including the Reconciler.
