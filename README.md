@@ -23,3 +23,16 @@ Using `python3 geomancy.py -h` will show you the help screen.
 
 ### Dependencies
 Color support on Windows requires [colorama](https://pypi.org/project/colorama/) module.
+
+### Screenshots
+The help screen:
+
+![Help screen](/screenshots/help.png)
+
+Interactive mode:
+
+![Interactive mode](/screenshots/interactive_mode.png)
+
+Dual mode:
+
+![Dual mode](/screenshots/double.png)
