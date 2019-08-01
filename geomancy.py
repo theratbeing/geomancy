@@ -97,10 +97,10 @@ def colorizePlanet(figure):
     result = []
     if figure == Carcer or figure == Tristitia:
         for line in figure:
-            result.append(fg_white + line + reset)
+            result.append(fg_gray + line + reset)
     elif figure == Laetitia or figure == Acquisitio:
         for line in figure:
-            result.append(fg_cyan + line + reset)
+            result.append(fg_blue + line + reset)
     elif figure == Puer or figure == Rubeus:
         for line in figure:
             result.append(fg_red + line + reset)
@@ -112,13 +112,13 @@ def colorizePlanet(figure):
             result.append(fg_green + line + reset)
     elif figure == Conjunctio or figure == Albus:
         for line in figure:
-            result.append(fg_yellow + line + reset)
+            result.append(fg_cyan + line + reset)
     elif figure == Via or figure == Populus:
         for line in figure:
             result.append(fg_magenta + line + reset)
     else:
         for line in figure:
-            result.append(fg_gray + line + reset)
+            result.append(fg_white + line + reset)
     return result
 ##############################
 ######### Help Text ##########
@@ -169,12 +169,12 @@ Help = """ NAME
     COLOR SCHEME
 
     Planet          Color                          Element         Color
-    Saturn          White                          Fire            Red
-    Jupiter         Cyan                           Air             Yellow
+    Saturn          Gray                           Fire            Red
+    Jupiter         Blue                           Air             Yellow
     Mars            Red                            Water           Blue
-    Sun             Bright yellow                  Earth           Green
+    Sun             Yellow                         Earth           Green
     Venus           Green
-    Mercury         Yellow
+    Mercury         Cyan
     Moon            Magenta
     Lunar nodes     Gray
 """
@@ -225,14 +225,14 @@ ColorHelp = """\u001b[7m NAME       \u001b[0m
     \u001b[4mCOLOR SCHEME\u001b[0m
 
     \u001b[7mPlanet          Color                          Element         Color       \u001b[0m
-    Saturn          White                          \u001b[31mFire            Red\u001b[0m
-    \u001b[36mJupiter         Cyan\u001b[0m                           \u001b[33mAir             Yellow\u001b[0m
-    \u001b[31mMars            Red\u001b[0m                            \u001b[34mWater           Blue\u001b[0m
-    \u001b[33;1mSun             Bright yellow\u001b[0m                  \u001b[32mEarth           Green\u001b[0m
+    \u001b[30;1mSaturn          Gray                           \u001b[31mFire            Red\u001b[0m
+    \u001b[34mJupiter         Blue                           \u001b[33mAir             Yellow\u001b[0m
+    \u001b[31mMars            Red                            \u001b[34mWater           Blue\u001b[0m
+    \u001b[33;1mSun             Yellow                         \u001b[32mEarth           Green\u001b[0m
     \u001b[32mVenus           Green\u001b[0m
-    \u001b[33mMercury         Yellow\u001b[0m
+    \u001b[36mMercury         Cyan\u001b[0m
     \u001b[35mMoon            Magenta\u001b[0m
-    \u001b[30;1mLunar nodes     Gray\u001b[0m
+    Lunar nodes     White
 """
 ###########################################
 ########## Windows-only settings ##########
