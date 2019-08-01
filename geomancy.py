@@ -1,27 +1,25 @@
 #!/usr/bin/python3
-# Simple geomancy shield chart generator v0.5
-# nezumin /a|t\ protonmail /d/o\t\ com
+# Simple geomancy shield chart generator
 
 import platform
 import sys
 import random
 from time import strftime
 
-######################################################
-########## These strings are safe to modify ##########
-######################################################
+########## User settings ##########
 log_file = "geomancy.log"
-# p and k are used to display the figures. p=1; k=2
+# p and k are used to create and display the figures. p=1; k=2
 p = " x "
 k = "x x"
 # They can be changed to whatever symbol you like, e.g.
 #p = " o "
 #k = "o o"
-######################################################
+#p = " * "
+#k = "* *"
+####################################
 
-######################################
-######### Special Characters #########
-######################################
+######### Special characters and strings #########
+
 Color = True
 
 fg_white = "\u001b[37m"
@@ -40,11 +38,12 @@ reset = "\u001b[0m"
 
 s = " " # whitespace character for layout
 nl = "\n" # newline
-FatalError = "[ERROR] Judge is invalid figure! The script is broken :("
+fatal_error = "[ERROR] Judge is invalid figure! The script is broken :("
+warning_rubeus = "[Warning] 1st Mother is Rubeus. Querent has ulterior motives."
+warning_cauda = "[Warning] 1st Mother is Cauda Draconis. Querent won't listen to advice."
 
-###########################################
 ########## Windows-only settings ##########
-###########################################
+
 if platform.system() == "Windows":
     nl = "\r\n"
     try:
@@ -53,9 +52,8 @@ if platform.system() == "Windows":
     except:
         Color = False
 
-#######################################
-########## Geomantic Figures ##########
-#######################################
+########## List of geomantic figures ##########
+
 Via = [p, p, p, p]
 Populus = [k, k, k, k]
 FMajor = [k, k, p, p]
@@ -74,9 +72,8 @@ Caput = [k, p, p, p]
 Cauda = [p, p, p, k]
 InvalidJudges = [Laetitia, Tristitia, Puer, Puella, Albus, Rubeus, Caput, Cauda]
 
-#####################################
-########## Correspondences ##########
-#####################################
+########## Color correspondences ##########
+
 Fire = [Laetitia, FMinor, Amissio, Cauda]
 Air = [Puer, Rubeus, Acquisitio, Conjunctio]
 Water = [Via, Populus, Albus, Puella]
@@ -125,21 +122,23 @@ def colorizePlanet(figure):
         for line in figure:
             result.append(fg_white + line + reset)
     return result
-##############################
+
 ######### Help Text ##########
-##############################
+
 Help = """\u001b[7m NAME       \u001b[0m
 
     geomancy.py         Python script to generate geomantic charts.
 
 \u001b[7m SYNOPSIS   \u001b[0m
 
-    geomancy.py [option1] [option2] [option3]
+    geomancy.py [options] [file]
 
 \u001b[7m DESCRIPTION \u001b[0m
 
     By default, this script generates a geomantic shield chart and logs it into
-    a plain text file named \u001b[33mgeomancy.log\u001b[0m along with time stamp.
+    a plain text file named \u001b[33mgeomancy.log\u001b[0m along with time stamp. Interactive
+    mode will log the chart into a file named after the querent unless the file
+    was explicitly mentioned in the command.
 
     -i, --interactive   Ask user prompt before generating charts.
     -m, --medieval      Generate house chart with medieval arrangement.
@@ -148,6 +147,7 @@ Help = """\u001b[7m NAME       \u001b[0m
     -n, --no-color      Disable color output in terminal.
     -q, --quiet         Disable logging except for errors.
     -h, --help          Show this help screen.
+    file                Name of log file to use.
 
     \u001b[4mHOUSE CHART LAYOUT\u001b[0m
 
@@ -190,12 +190,14 @@ HelpMono = """ NAME
 
  SYNOPSIS
 
-    geomancy.py [option1] [option2] [option3]
+    geomancy.py [options] [file]
 
  DESCRIPTION
 
     By default, this script generates a geomantic shield chart and logs it into
-    a plain text file named 'geomancy.log' along with time stamp.
+    a plain text file named 'geomancy.log' along with time stamp. Interactive
+    mode will log the chart into a file named after the querent unless the file
+    was explicitly mentioned in the command.
 
     -i, --interactive   Ask user prompt before generating charts.
     -m, --medieval      Generate house chart with medieval arrangement.
@@ -204,6 +206,7 @@ HelpMono = """ NAME
     -n, --no-color      Disable color output in terminal.
     -q, --quiet         Disable logging except for errors.
     -h, --help          Show this help screen.
+    file                Name of log file to use.
 
     HOUSE CHART LAYOUT
 
@@ -240,13 +243,19 @@ HelpMono = """ NAME
     Lunar nodes     Gray
 """
 
-############################################
 ########## Command line arguments ##########
-############################################
+
 Chart = "Shield"
 Double = False
 Logging = True
 Interactive = False
+log_override = False
+
+Options = ["-m", "--medieval", "-a", "--agrippa",
+           "-d", "--dual", "-q", "--quiet",
+           "-n", "--no-color", "-h", "--help",
+           "-i", "--interactive"]
+
 if "-m" in sys.argv or "--medieval" in sys.argv:
     Chart = "Medieval house"
 if "-a" in sys.argv or "--agrippa" in sys.argv:
@@ -264,9 +273,13 @@ if "-h" in sys.argv or "--help" in sys.argv:
         print(HelpMono)
     quit()
 
-######################################
+if sys.argv[-1] in Options:
+    pass
+else:
+    log_file = sys.argv[-1]
+    log_override = True
+
 ########## Interactive mode ##########
-######################################
 
 if "-i" in sys.argv or "--interactive" in sys.argv:
     Interactive = True
@@ -275,6 +288,8 @@ if "-i" in sys.argv or "--interactive" in sys.argv:
         print("Geomantic Chart Generator".center(72))
         print("="*72 + reset + "\n")
         querent = input(fg_greenbright + "Name  : " + reset)
+        if log_override == False:
+            log_file = querent + ".log"
         query = input(fg_greenbright + "Query : " + reset)
         print(fg_yellow + underline + "\nSelect chart type:\n" + reset)
         print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
@@ -284,6 +299,8 @@ if "-i" in sys.argv or "--interactive" in sys.argv:
         print("Geomantic Chart Generator".center(72))
         print("="*72 + "\n")
         querent = input("Name  : ")
+        if log_override == False:
+            log_file = querent + ".log"
         query = input("Query : ")
         print("\nSelect chart type:\n" + "-"*18 )
         print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
@@ -296,9 +313,7 @@ if "-i" in sys.argv or "--interactive" in sys.argv:
         Chart = "Shield"
     print(" ")
     
-##################################################
 ########## Chart processing starts here ##########
-##################################################
 
 CurrentTime = strftime("%Y-%m-%d (%a) %H:%M:%S")
 RawData = []
@@ -335,15 +350,16 @@ WitnessB = xorFigures(NieceC, NieceD)
 Judge = xorFigures(WitnessA, WitnessB)
 Reconciler = xorFigures(Judge, MotherA)
 
-# This error should be impossible to trigger.
+########## Integrity check ##########
 if Judge in InvalidJudges:
     if Color:
-        print(fg_red + FatalError + reset)
+        print(fg_red + fatal_error + reset)
     else:
-        print(FatalError)
+        print(fatal_error)
     log = open(log_file, "a+")
-    log.write(nl + FatalError + nl)
+    log.write(nl + fatal_error + nl)
     log.close()
+######################################
 
 # Arrangements for log file
 FigureShield = [MotherA, MotherB, MotherC, MotherD,
@@ -376,12 +392,7 @@ else:
     OutputShield = FigureShield
     OutputHouse = FigureHouse
 
-# Shield chart design (rough sketch):
-#
-# DA4 DA3 DA2 DA1 MO4 MO3 MO2 MO1
-# ---NI4---NI3------NI2-----NI1
-# ------WI1--------------WI2
-# --------------JUD-----------REC
+########## Chart-drawing functions ##########
 
 def drawShield():
     header_text = "Shield chart generated at " + CurrentTime
@@ -421,14 +432,6 @@ def logShield():
     for x in range(4):
         log.write(s*35 + Judge[x] + s*25 + Reconciler[x] + nl)
     log.close()
-
-# House chart design
-#
-#---#NI3#NI2#NI1#---#|#WI2#---#WI1#
-#NI4#---#---#---#DA4#|#---#JUD#---#
-#MO1#---#---#---#DA3#|#-----------#
-#MO2#---#---#---#DA2#|#---#REC#---#
-#---#MO3#MO4#DA1#---#|
 
 def drawHouse():
     header_text = Chart + " chart generated at " + CurrentTime
@@ -476,9 +479,7 @@ def logHouse():
         log.write(s*13 + FigureHouse[2][x] + s*6 + FigureHouse[3][x] + s*6 + FigureHouse[4][x] + s*11 + " | " + nl)
     log.close()
 
-###################################
 ########## Script output ##########
-###################################
 
 if Double:
     drawShield()
@@ -499,10 +500,24 @@ else:
         if Logging:
             logShield()
 
-# You should be able to memorize these warnings.
-#if MotherA == Rubeus:
-#    print("[Warning] 1st Mother is Rubeus. Querent has ulterior motives.")
-#elif MotherA == Cauda:
-#    print("[Warning] 1st Mother is Cauda Draconis. Querent won't listen to advice.")
+########## Warnings for the geomancer ##########
+
+if MotherA == Rubeus and Color:
+    print(fg_yellow + warning_rubeus + reset)
+elif MotherA == Rubeus and Color == False:
+    print(warning_rubeus)
+elif MotherA == Cauda and Color:
+    print(fg_yellow + warning_cauda + reset)
+elif MotherA == Cauda and Color == False:
+    print(warning_cauda)
+
+if Logging and MotherA == Rubeus:
+    log = open(log_file, "a+")
+    log.write(warning_rubeus + nl)
+    log.close()
+elif Logging and MotherA == Cauda:
+    log = open(log_file, "a+")
+    log.write(warning_cauda + nl)
+    log.close()
 
 #EOF
