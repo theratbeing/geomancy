@@ -369,7 +369,7 @@ PNieceB = NieceB
 PNieceC = NieceC
 PNieceD = NieceD
 PWitnessA = WitnessA
-PWitnessB = WitnessA
+PWitnessB = WitnessB
 PJudge = Judge
 PReconciler = Reconciler
 
@@ -447,7 +447,7 @@ if Color:
     PNieceC = colorizeElement(NieceC)
     PNieceD = colorizeElement(NieceD)
     PWitnessA = colorizeElement(WitnessA)
-    PWitnessB = colorizeElement(WitnessA)
+    PWitnessB = colorizeElement(WitnessB)
     PJudge = colorizeElement(Judge)
     PReconciler = colorizeElement(Reconciler)
     PHouse1 = colorizePlanet(MotherA)
