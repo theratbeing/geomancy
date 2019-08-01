@@ -18,7 +18,40 @@ k = "x x"
 #p = " o "
 #k = "o o"
 ######################################################
-# Be careful modifying things beyond this point!
+
+######################################
+######### Special Characters #########
+######################################
+Color = True
+
+fg_white = "\u001b[37m"
+fg_red = "\u001b[31m"
+fg_yellow = "\u001b[33m"
+fg_green = "\u001b[32m"
+fg_greenbright = "\u001b[32;1m"
+fg_cyan = "\u001b[36m"
+fg_blue = "\u001b[34m"
+fg_magenta = "\u001b[35m"
+fg_gray = "\u001b[30;1m"
+bold = "\u001b[1m"
+underline = "\u001b[4m"
+reversal = "\u001b[7m"
+reset = "\u001b[0m"
+
+s = " " # whitespace character for layout
+nl = "\n" # newline
+FatalError = "[ERROR] Judge is invalid figure! The script is broken :("
+
+###########################################
+########## Windows-only settings ##########
+###########################################
+if platform.system() == "Windows":
+    nl = "\r\n"
+    try:
+        from colorama import init
+        init()
+    except:
+        Color = False
 
 #######################################
 ########## Geomantic Figures ##########
@@ -48,29 +81,6 @@ Fire = [Laetitia, FMinor, Amissio, Cauda]
 Air = [Puer, Rubeus, Acquisitio, Conjunctio]
 Water = [Via, Populus, Albus, Puella]
 Earth = [Carcer, Tristitia, Caput, FMajor]
-
-######################################
-######### Special Characters #########
-######################################
-Color = True
-
-fg_white = "\u001b[37m"
-fg_red = "\u001b[31m"
-fg_yellow = "\u001b[33m"
-fg_green = "\u001b[32m"
-fg_greenbright = "\u001b[32;1m"
-fg_cyan = "\u001b[36m"
-fg_blue = "\u001b[34m"
-fg_magenta = "\u001b[35m"
-fg_gray = "\u001b[30;1m"
-bold = "\u001b[1m"
-underline = "\u001b[4m"
-reversal = "\u001b[7m"
-reset = "\u001b[0m"
-
-s = " " # whitespace character for layout
-nl = "\n" # newline
-FatalError = "[ERROR] Judge is invalid figure! The script is broken :("
 
 def colorizeElement(figure):
     result = []
@@ -229,13 +239,6 @@ HelpMono = """ NAME
     Moon            Magenta
     Lunar nodes     Gray
 """
-
-###########################################
-########## Windows-only settings ##########
-###########################################
-if platform.system() == "Windows":
-    Color = False
-    nl = "\r\n"
 
 ############################################
 ########## Command line arguments ##########
