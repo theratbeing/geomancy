@@ -1,5 +1,6 @@
 #!/usr/bin/python3
-# Simple geomancy shield chart generator
+# Simple geomancy shield chart generator v0.5
+# nezumin /a|t\ protonmail /d/o\t\ com
 
 import platform
 import sys
@@ -55,19 +56,13 @@ Color = True
 
 fg_white = "\u001b[37m"
 fg_red = "\u001b[31m"
-fg_redbright = "\u001b[31;1m"
 fg_yellow = "\u001b[33m"
-fg_yellowbright = "\u001b[33;1m"
 fg_green = "\u001b[32m"
 fg_greenbright = "\u001b[32;1m"
 fg_cyan = "\u001b[36m"
 fg_blue = "\u001b[34m"
 fg_magenta = "\u001b[35m"
 fg_gray = "\u001b[30;1m"
-bg_red = "\u001b[41m"
-bg_yellow = "\u001b[43m"
-bg_blue = "\u001b[44m"
-bg_green = "\u001b[42m"
 bold = "\u001b[1m"
 underline = "\u001b[4m"
 reversal = "\u001b[7m"
@@ -106,7 +101,7 @@ def colorizePlanet(figure):
             result.append(fg_red + line + reset)
     elif figure == FMajor or figure == FMinor:
         for line in figure:
-            result.append(fg_yellowbright + line + reset)
+            result.append(fg_yellow + line + reset)
     elif figure == Amissio or figure == Puella:
         for line in figure:
             result.append(fg_green + line + reset)
@@ -123,7 +118,63 @@ def colorizePlanet(figure):
 ##############################
 ######### Help Text ##########
 ##############################
-Help = """ NAME
+Help = """\u001b[7m NAME       \u001b[0m
+
+    geomancy.py         Python script to generate geomantic charts.
+
+\u001b[7m SYNOPSIS   \u001b[0m
+
+    geomancy.py [option1] [option2] [option3]
+
+\u001b[7m DESCRIPTION \u001b[0m
+
+    By default, this script generates a geomantic shield chart and logs it into
+    a plain text file named \u001b[33mgeomancy.log\u001b[0m along with time stamp.
+
+    -i, --interactive   Ask user prompt before generating charts.
+    -m, --medieval      Generate house chart with medieval arrangement.
+    -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
+    -d, --dual          Generate both shield chart and house chart.
+    -n, --no-color      Disable color output in terminal.
+    -q, --quiet         Disable logging except for errors.
+    -h, --help          Show this help screen.
+
+    \u001b[4mHOUSE CHART LAYOUT\u001b[0m
+
+        \u001b[33m(11)\u001b[0m \u001b[32m(10)\u001b[0m \u001b[31m( 9)\u001b[0m
+    \u001b[34m(12)              ( 8)\u001b[0m            (B)   (A)
+    \u001b[31m( 1)\u001b[0m              \u001b[33m( 7)\u001b[0m               (C)
+    \u001b[32m( 2)\u001b[0m              \u001b[32m( 6)\u001b[0m               (D)
+        \u001b[33m( 3)\u001b[0m \u001b[34m( 4)\u001b[0m \u001b[31m( 5)\u001b[0m
+
+    1-12: Astrological houses           C: Judge
+    A   : Right Witness                 D: Reconciler
+    B   : Left Witness
+    
+    Medieval method of geomancy placess the figures in the astrological houses
+    in order of their generation. Mothers go to Houses 1-4, Daughters go to
+    Houses 5-8, and Nieces go to Houses 9-12.
+    
+    In the \u001b[33mFourth Book of Occult Philosophy\u001b[0m, Pseudo-Agrippa gives a different
+    method of placement. The Mothers are placed in angular houses (1, 10, 7, 4)
+    the Daughters in succedent houses (2, 11, 8, 5); and the Nieces are placed
+    in cadent houses (3, 12, 9, 6). This is the method used by \u001b[33mHermetic Order
+    of Golden Dawn.\u001b[0m
+
+    \u001b[4mCOLOR SCHEME\u001b[0m
+
+    \u001b[7mPlanet          Color                          Element         Color       \u001b[0m
+    \u001b[30;1mSaturn          Gray                           \u001b[31mFire            Red\u001b[0m
+    \u001b[34mJupiter         Blue                           \u001b[33mAir             Yellow\u001b[0m
+    \u001b[31mMars            Red                            \u001b[34mWater           Blue\u001b[0m
+    \u001b[33mSun             Yellow                         \u001b[32mEarth           Green\u001b[0m
+    \u001b[32mVenus           Green\u001b[0m
+    \u001b[36mMercury         Cyan\u001b[0m
+    \u001b[35mMoon            Magenta\u001b[0m
+    Lunar nodes     White
+"""
+
+HelpMono = """ NAME
 
     geomancy.py         Python script to generate geomantic charts.
 
@@ -146,10 +197,10 @@ Help = """ NAME
 
     HOUSE CHART LAYOUT
 
-        (11) (10) ( 9)                (B)   (A)
-    (12)              ( 8)               (C)
-    ( 1)              ( 7)               (D)
-    ( 2)              ( 6)
+        (11) (10) ( 9)
+    (12)              ( 8)            (B)   (A)
+    ( 1)              ( 7)               (C)
+    ( 2)              ( 6)               (D)
         ( 3) ( 4) ( 5)
 
     1-12: Astrological houses           C: Judge
@@ -179,61 +230,6 @@ Help = """ NAME
     Lunar nodes     Gray
 """
 
-ColorHelp = """\u001b[7m NAME       \u001b[0m
-
-    geomancy.py         Python script to generate geomantic charts.
-
-\u001b[7m SYNOPSIS   \u001b[0m
-
-    geomancy.py [option1] [option2] [option3]
-
-\u001b[7m DESCRIPTION \u001b[0m
-
-    By default, this script generates a geomantic shield chart and logs it into
-    a plain text file named \u001b[33mgeomancy.log\u001b[0m along with time stamp.
-
-    -i, --interactive   Ask user prompt before generating charts.
-    -m, --medieval      Generate house chart with medieval arrangement.
-    -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
-    -d, --dual          Generate both shield chart and house chart.
-    -n, --no-color      Disable color output in terminal.
-    -q, --quiet         Disable logging except for errors.
-    -h, --help          Show this help screen.
-
-    \u001b[4mHOUSE CHART LAYOUT\u001b[0m
-
-        \u001b[33m(11)\u001b[0m \u001b[32m(10)\u001b[0m \u001b[31m( 9)\u001b[0m                (B)   (A)
-    \u001b[34m(12)              ( 8)\u001b[0m               (C)
-    \u001b[31m( 1)\u001b[0m              \u001b[33m( 7)\u001b[0m               (D)
-    \u001b[32m( 2)\u001b[0m              \u001b[32m( 6)\u001b[0m
-        \u001b[33m( 3)\u001b[0m \u001b[34m( 4)\u001b[0m \u001b[31m( 5)\u001b[0m
-
-    1-12: Astrological houses           C: Judge
-    A   : Right Witness                 D: Reconciler
-    B   : Left Witness
-    
-    Medieval method of geomancy placess the figures in the astrological houses
-    in order of their generation. Mothers go to Houses 1-4, Daughters go to
-    Houses 5-8, and Nieces go to Houses 9-12.
-    
-    In the \u001b[33mFourth Book of Occult Philosophy\u001b[0m, Pseudo-Agrippa gives a different
-    method of placement. The Mothers are placed in angular houses (1, 10, 7, 4)
-    the Daughters in succedent houses (2, 11, 8, 5); and the Nieces are placed
-    in cadent houses (3, 12, 9, 6). This is the method used by \u001b[33mHermetic Order
-    of Golden Dawn.\u001b[0m
-
-    \u001b[4mCOLOR SCHEME\u001b[0m
-
-    \u001b[7mPlanet          Color                          Element         Color       \u001b[0m
-    \u001b[30;1mSaturn          Gray                           \u001b[31mFire            Red\u001b[0m
-    \u001b[34mJupiter         Blue                           \u001b[33mAir             Yellow\u001b[0m
-    \u001b[31mMars            Red                            \u001b[34mWater           Blue\u001b[0m
-    \u001b[33;1mSun             Yellow                         \u001b[32mEarth           Green\u001b[0m
-    \u001b[32mVenus           Green\u001b[0m
-    \u001b[36mMercury         Cyan\u001b[0m
-    \u001b[35mMoon            Magenta\u001b[0m
-    Lunar nodes     White
-"""
 ###########################################
 ########## Windows-only settings ##########
 ###########################################
@@ -260,9 +256,9 @@ if "-n" in sys.argv or "--no-color" in sys.argv:
     Color = False
 if "-h" in sys.argv or "--help" in sys.argv:
     if Color:
-        print(ColorHelp)
-    else:
         print(Help)
+    else:
+        print(HelpMono)
     quit()
 
 ######################################
@@ -271,18 +267,23 @@ if "-h" in sys.argv or "--help" in sys.argv:
 
 if "-i" in sys.argv or "--interactive" in sys.argv:
     Interactive = True
-    print("=========================\nGeomantic Chart Generator\n=========================\n")
     if Color:
+        print(fg_magenta + "="*72)
+        print("Geomantic Chart Generator".center(72))
+        print("="*72 + reset + "\n")
         querent = input(fg_greenbright + "Name  : " + reset)
         query = input(fg_greenbright + "Query : " + reset)
-        print(fg_yellow + "\nSelect chart type:\n--------------------------" + reset)
-        print("1 Shield chart\n2 Medieval house chart\n3 Agrippa house chart\n")
+        print(fg_yellow + underline + "\nSelect chart type:\n" + reset)
+        print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
         asktype = input(fg_greenbright + "[1/2/3] " + reset)
     else:
+        print("="*72)
+        print("Geomantic Chart Generator".center(72))
+        print("="*72 + "\n")
         querent = input("Name  : ")
         query = input("Query : ")
-        print("\nSelect chart type:\n--------------------------")
-        print("1 Shield chart\n2 Medieval house chart\n3 Agrippa house chart\n")
+        print("\nSelect chart type:\n" + "-"*18 )
+        print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
         asktype = input("[1/2/3] ")
     if asktype == "2":
         Chart = "Medieval house"
@@ -290,14 +291,7 @@ if "-i" in sys.argv or "--interactive" in sys.argv:
         Chart = "Agrippa house"
     else:
         Chart = "Shield"
-    if Color:
-        confirm_log = input("Write to log? " + fg_greenbright + "[Y/n] " + reset)
-    else:
-        confirm_log = input("Write to log? [Y/n] ")
-    if confirm_log == "n" or confirm_log == "N":
-        Logging = False
-    else:
-        Logging = True
+    print(" ")
     
 ##################################################
 ########## Chart processing starts here ##########
@@ -313,17 +307,10 @@ MotherB = RawData[4:8]
 MotherC = RawData[8:12]
 MotherD = RawData[12:16]
 
-Transpose = []
-for x in range(4):
-    Transpose.append(MotherA[x])
-    Transpose.append(MotherB[x])
-    Transpose.append(MotherC[x])
-    Transpose.append(MotherD[x])
-
-DaughterA = Transpose[0:4]
-DaughterB = Transpose[4:8]
-DaughterC = Transpose[8:12]
-DaughterD = Transpose[12:16]
+DaughterA = [MotherA[0], MotherB[0], MotherC[0], MotherD[0]]
+DaughterB = [MotherA[1], MotherB[1], MotherC[1], MotherD[1]]
+DaughterC = [MotherA[2], MotherB[2], MotherC[2], MotherD[2]]
+DaughterD = [MotherA[3], MotherB[3], MotherC[3], MotherD[3]]
 
 # Function to process the figures
 def xorFigures(fig1, fig2):
@@ -348,137 +335,43 @@ Reconciler = xorFigures(Judge, MotherA)
 # This error should be impossible to trigger.
 if Judge in InvalidJudges:
     if Color:
-        print(bg_red + FatalError + reset)
+        print(fg_red + FatalError + reset)
     else:
         print(FatalError)
     log = open(log_file, "a+")
     log.write(nl + FatalError + nl)
     log.close()
 
-# Copy figures for screen output and color
-PMotherA = MotherA
-PMotherB = MotherB
-PMotherC = MotherC
-PMotherD = MotherD
-PDaughterA = DaughterA
-PDaughterB = DaughterB
-PDaughterC = DaughterC
-PDaughterD = DaughterD
-PNieceA = NieceA
-PNieceB = NieceB
-PNieceC = NieceC
-PNieceD = NieceD
-PWitnessA = WitnessA
-PWitnessB = WitnessB
-PJudge = Judge
-PReconciler = Reconciler
+# Arrangements for log file
+FigureShield = [MotherA, MotherB, MotherC, MotherD,
+                DaughterA, DaughterB, DaughterC, DaughterD,
+                NieceA, NieceB, NieceC, NieceD,
+                WitnessA, WitnessB, Judge, Reconciler]
 
-# Arrangement for house chart in log file
-House1 = MotherA
-House2 = MotherB
-House3 = MotherC
-House4 = MotherD
-House5 = DaughterA
-House6 = DaughterB
-House7 = DaughterC
-House8 = DaughterD
-House9 = NieceA
-House10 = NieceB
-House11 = NieceC
-House12 = NieceD
-# Screen output for house chart
-PHouse1 = MotherA
-PHouse2 = MotherB
-PHouse3 = MotherC
-PHouse4 = MotherD
-PHouse5 = DaughterA
-PHouse6 = DaughterB
-PHouse7 = DaughterC
-PHouse8 = DaughterD
-PHouse9 = NieceA
-PHouse10 = NieceB
-PHouse11 = NieceC
-PHouse12 = NieceD
-PPWitnessA = WitnessA
-PPWitnessB = WitnessB
-PPJudge = Judge
-PPReconciler = Reconciler
+FigureHouse = [MotherA, MotherB, MotherC, MotherD,
+                DaughterA, DaughterB, DaughterC, DaughterD,
+                NieceA, NieceB, NieceC, NieceD,
+                WitnessA, WitnessB, Judge, Reconciler]
 
 if Chart == "Agrippa house":
-    House1 = MotherA #angular
-    House2 = DaughterA #succedent
-    House3 = NieceA #cadent
-    House4 = MotherD #a
-    House5 = DaughterD #s
-    House6 = NieceD #c
-    House7 = MotherC #a
-    House8 = DaughterC #s
-    House9 = NieceC #c
-    House10 = MotherB #a
-    House11 = DaughterB #s
-    House12 = NieceB #c
-    PHouse1 = MotherA #screen output
-    PHouse2 = DaughterA #succedent
-    PHouse3 = NieceA #cadent
-    PHouse4 = MotherD #a
-    PHouse5 = DaughterD #s
-    PHouse6 = NieceD #c
-    PHouse7 = MotherC #a
-    PHouse8 = DaughterC #s
-    PHouse9 = NieceC #c
-    PHouse10 = MotherB #a
-    PHouse11 = DaughterB #s
-    PHouse12 = NieceB #c
+    FigureHouse = [MotherA, DaughterA, NieceA,
+                   MotherD, DaughterD, NieceD,
+                   MotherC, DaughterC, NieceC,
+                   MotherB, DaughterB, NieceB,
+                   WitnessA, WitnessB, Judge, Reconciler]
 
-########################################
-########## Colorize the chart ##########
-########################################
+# Screen output and color
+OutputShield = []
+OutputHouse = []
+
 if Color:
-    PMotherA = colorizeElement(MotherA)
-    PMotherB = colorizeElement(MotherB)
-    PMotherC = colorizeElement(MotherC)
-    PMotherD = colorizeElement(MotherD)
-    PDaughterA = colorizeElement(DaughterA)
-    PDaughterB = colorizeElement(DaughterB)
-    PDaughterC = colorizeElement(DaughterC)
-    PDaughterD = colorizeElement(DaughterD)
-    PNieceA = colorizeElement(NieceA)
-    PNieceB = colorizeElement(NieceB)
-    PNieceC = colorizeElement(NieceC)
-    PNieceD = colorizeElement(NieceD)
-    PWitnessA = colorizeElement(WitnessA)
-    PWitnessB = colorizeElement(WitnessB)
-    PJudge = colorizeElement(Judge)
-    PReconciler = colorizeElement(Reconciler)
-    PHouse1 = colorizePlanet(MotherA)
-    PHouse2 = colorizePlanet(MotherB)
-    PHouse3 = colorizePlanet(MotherC)
-    PHouse4 = colorizePlanet(MotherD)
-    PHouse5 = colorizePlanet(DaughterA)
-    PHouse6 = colorizePlanet(DaughterB)
-    PHouse7 = colorizePlanet(DaughterC)
-    PHouse8 = colorizePlanet(DaughterD)
-    PHouse9 = colorizePlanet(NieceA)
-    PHouse10 = colorizePlanet(NieceB)
-    PHouse11 = colorizePlanet(NieceC)
-    PHouse12 = colorizePlanet(NieceD)
-    PPWitnessA = colorizePlanet(WitnessA)
-    PPWitnessB = colorizePlanet(WitnessB)
-    PPJudge = colorizePlanet(Judge)
-    PPReconciler = colorizePlanet(Reconciler)
-    if Chart == "Agrippa house":
-        PHouse1 = colorizePlanet(MotherA)
-        PHouse2 = colorizePlanet(DaughterA)
-        PHouse3 = colorizePlanet(NieceA) #cadent
-        PHouse4 = colorizePlanet(MotherD) #a
-        PHouse5 = colorizePlanet(DaughterD) #s
-        PHouse6 = colorizePlanet(NieceD) #c
-        PHouse7 = colorizePlanet(MotherC) #a
-        PHouse8 = colorizePlanet(DaughterC) #s
-        PHouse9 = colorizePlanet(NieceC) #c
-        PHouse10 = colorizePlanet(MotherB) #a
-        PHouse11 = colorizePlanet(DaughterB) #s
-        PHouse12 = colorizePlanet(NieceB) #c
+    for figure in FigureShield:
+        OutputShield.append(colorizeElement(figure))
+    for figure in FigureHouse:
+        OutputHouse.append(colorizePlanet(figure))
+else:
+    OutputShield = FigureShield
+    OutputHouse = FigureHouse
 
 # Shield chart design (rough sketch):
 #
@@ -488,41 +381,42 @@ if Color:
 # --------------JUD-----------REC
 
 def drawShield():
-    print("="*60)
-    print("Shield chart generated at " + CurrentTime)
-    print("="*60)
+    header_text = "Shield chart generated at " + CurrentTime
+    print("-"*72)
+    print(header_text.center(72))
+    print("-"*72)
     for x in range(4):
-        print(PDaughterD[x] + s*5 + PDaughterC[x] + s*5 + PDaughterB[x] + s*5 + PDaughterA[x] + s*5 + PMotherD[x] + s*5 + PMotherC[x] + s*5 + PMotherB[x] + s*5 + PMotherA[x])
+        print(s*6 + OutputShield[7][x] + s*5 + OutputShield[6][x] + s*5 + OutputShield[5][x] + s*5 + OutputShield[4][x] + s*5 + OutputShield[3][x] + s*5 + OutputShield[2][x] + s*5 + OutputShield[1][x] + s*5 + OutputShield[0][x])
     print("\n")
     for x in range(4):
-        print(s*4 + PNieceD[x] + s*13 + PNieceC[x] + s*13 + PNieceB[x] + s*13 + PNieceA[x])
+        print(s*10 + OutputShield[11][x] + s*13 + OutputShield[10][x] + s*13 + OutputShield[9][x] + s*13 + OutputShield[8][x])
     print("\n")
     for x in range(4):
-        print(s*12 + PWitnessB[x] + s*29 + PWitnessA[x])
+        print(s*18 + OutputShield[13][x] + s*29 + OutputShield[12][x])
     print("\n")
     for x in range(4):
-        print(s*29 + PJudge[x] + s*25 + PReconciler[x])
+        print(s*35 + OutputShield[14][x] + s*25 + OutputShield[15][x])
 
 def logShield():
     log = open(log_file, "a+")
     if Interactive:
-        log.write("="*60 + nl)
+        log.write("="*72 + nl)
         log.write("Name  : " + querent + nl)
         log.write("Query : " + query + nl)
-    log.write("="*60 + nl)
-    log.write("Shield chart generated at " + CurrentTime + nl)
-    log.write("="*60 + nl)
+    log.write("-"*72 + nl)
+    log.write(s*10 + "Shield chart generated at " + CurrentTime + nl)
+    log.write("-"*72 + nl)
     for x in range(4):
-        log.write(DaughterD[x] + s*5 + DaughterC[x] + s*5 + DaughterB[x] + s*5 + DaughterA[x] + s*5 + MotherD[x] + s*5 + MotherC[x] + s*5 + MotherB[x] + s*5 + MotherA[x] + nl)
+        log.write(s*6 + DaughterD[x] + s*5 + DaughterC[x] + s*5 + DaughterB[x] + s*5 + DaughterA[x] + s*5 + MotherD[x] + s*5 + MotherC[x] + s*5 + MotherB[x] + s*5 + MotherA[x] + nl)
     log.write(nl)
     for x in range(4):
-        log.write(s*4 + NieceD[x] + s*13 + NieceC[x] + s*13 + NieceB[x] + s*13 + NieceA[x] + nl)
+        log.write(s*10 + NieceD[x] + s*13 + NieceC[x] + s*13 + NieceB[x] + s*13 + NieceA[x] + nl)
     log.write(nl)
     for x in range(4):
-        log.write(s*12 + WitnessB[x] + s*29 + WitnessA[x] + nl)
+        log.write(s*18 + WitnessB[x] + s*29 + WitnessA[x] + nl)
     log.write(nl)
     for x in range(4):
-        log.write(s*29 + Judge[x] + s*25 + Reconciler[x] + nl)
+        log.write(s*35 + Judge[x] + s*25 + Reconciler[x] + nl)
     log.close()
 
 # House chart design
@@ -534,47 +428,49 @@ def logShield():
 #---#MO3#MO4#DA1#---#|
 
 def drawHouse():
-    print("="*60)
-    print(Chart + " chart generated at " + CurrentTime)
-    print("="*60)
+    header_text = Chart + " chart generated at " + CurrentTime
+    print("-"*72)    
+    print(header_text.center(72))
+    print("-"*72)
     for x in range(4):
-        print(s*7 + PHouse11[x] + s*6 + PHouse10[x] + s*6 + PHouse9[x] + s*11 + " | " + s*4 + PPWitnessB[x] + s*8 + PPWitnessA[x])
-    print(s*40 + "|")
+        print(s*13 + OutputHouse[10][x] + s*6 + OutputHouse[9][x] + s*6 + OutputHouse[8][x] + s*11 + " | ")
+    print(s*46 + "|")
     for x in range(4):
-        print(PHouse12[x] + s*29 + PHouse8[x] + s*4 + " | " + s*10 + PPJudge[x])
-    print(s*40 + "|")
+        print(s*6 + OutputHouse[11][x] + s*29 + OutputHouse[7][x] + s*4 + " | " + s*4 + OutputHouse[13][x] + s*8 + OutputHouse[12][x])
+    print(s*46 + "|")
     for x in range(4):
-        print(PHouse1[x] + s*29 + PHouse7[x] + s*4 + " | " + s*10 + PPReconciler[x])
-    print(s*40 + "|")
+        print(s*6 + OutputHouse[0][x] + s*29 + OutputHouse[6][x] + s*4 + " | " + s*10 + OutputHouse[14][x])
+    print(s*46 + "|")
     for x in range(4):
-        print(PHouse2[x] + s*29 + PHouse6[x] + s*4 + " | ")
-    print(s*40 + "|")
+        print(s*6 + OutputHouse[1][x] + s*29 + OutputHouse[5][x] + s*4 + " | " + s*10 + OutputHouse[15][x])
+    print(s*46 + "|")
     for x in range(4):
-        print(s*7 + PHouse3[x] + s*6 + PHouse4[x] + s*6 + PHouse5[x] + s*11 + " | ")
+        print(s*13 + OutputHouse[2][x] + s*6 + OutputHouse[3][x] + s*6 + OutputHouse[4][x] + s*11 + " | ")
 
 def logHouse():
     log = open(log_file, "a+")
     if Interactive:
-        log.write("="*60 + nl)
+        log.write("="*72 + nl)
         log.write("Name  : " + querent + nl)
         log.write("Query : " + query + nl)
-    log.write("="*60 + nl)
-    log.write(Chart + " chart generated at " + CurrentTime + nl)
-    log.write("="*60 + nl)
+    log.write("-"*72 + nl)
+    header_text = Chart + " chart generated at " + CurrentTime
+    log.write(header_text.center(72) + nl)
+    log.write("-"*72 + nl)
     for x in range(4):
-        log.write(s*7 + House11[x] + s*6 + House10[x] + s*6 + House9[x] + s*11 + " | " + s*4 + WitnessB[x] + s*8 + WitnessA[x] + nl)
-    log.write(s*40 + "|" + nl)
+        log.write(s*13 + FigureHouse[10][x] + s*6 + FigureHouse[9][x] + s*6 + FigureHouse[8][x] + s*11 + " | " + nl)
+    log.write(s*46 + "|" + nl)
     for x in range(4):
-        log.write(House12[x] + s*29 + House8[x] + s*4 + " | " + s*10 + Judge[x] + nl)
-    log.write(s*40 + "|" + nl)
+        log.write(s*6 + FigureHouse[11][x] + s*29 + FigureHouse[7][x] + s*4 + " | " + s*4 + WitnessB[x] + s*8 + WitnessA[x] + nl)
+    log.write(s*46 + "|" + nl)
     for x in range(4):
-        log.write(House1[x] + s*29 + House7[x] + s*4 + " | " + s*10 + Reconciler[x] + nl)
-    log.write(s*40 + "|" + nl)
+        log.write(s*6 + FigureHouse[0][x] + s*29 + FigureHouse[6][x] + s*4 + " | " + s*10 + Judge[x] + nl)
+    log.write(s*46 + "|" + nl)
     for x in range(4):
-        log.write(House2[x] + s*29 + House6[x] + s*4 + " | " + nl)
-    log.write(s*40 + "|" + nl)
+        log.write(s*6 + FigureHouse[1][x] + s*29 + FigureHouse[5][x] + s*4 + " | " + s*10 + Reconciler[x] + nl)
+    log.write(s*46 + "|" + nl)
     for x in range(4):
-        log.write(s*7 + House3[x] + s*6 + House4[x] + s*6 + House5[x] + s*11 + " | " + nl)
+        log.write(s*13 + FigureHouse[2][x] + s*6 + FigureHouse[3][x] + s*6 + FigureHouse[4][x] + s*11 + " | " + nl)
     log.close()
 
 ###################################
