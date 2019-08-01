@@ -4,9 +4,9 @@ Python3 script to generate geomantic divination charts.
 ### Features
 * Color output: figures have different color depending on its correspondence and the chart type. (2019-07-31)
 
-* Interactive mode: the script asks for querent name, the query, and chart type before generating a chart. (2019-07-24)
+* Interactive mode: the script asks for querent name, the query, and chart type before generating a chart (2019-07-24). Each querent will have their own log file (2019-08-01). 
 
-* Automatic logging: output will be automatically written to a file specified in `log_file`.
+* Automatic logging: output will be automatically written to a file.
 
 * Agrippa/Golden Dawn house chart: Mothers are placed in angular houses, Daughters are placed in succedent houses, Nieces are placed in cadent houses.
 
