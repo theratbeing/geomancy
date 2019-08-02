@@ -2,6 +2,8 @@
 Python3 script to generate geomantic divination charts.
 
 ### Features
+* Chart analysis: automatically detects modes of perfection (2019-08-02).
+
 * Color output: figures have different color depending on its correspondence and the chart type. (2019-07-31)
 
 * Interactive mode: the script asks for querent name, the query, and chart type before generating a chart (2019-07-24). Each querent will have their own log file (2019-08-01). 
