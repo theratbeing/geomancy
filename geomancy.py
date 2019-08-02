@@ -18,9 +18,36 @@ k = "x x"
 #k = "* *"
 ####################################
 
-######### Special characters and strings #########
-
+########## Command line arguments ##########
 Color = True
+Chart = "Shield"
+Double = False
+Logging = True
+Interactive = False
+log_override = False
+
+Options = ["-m", "--medieval", "-a", "--agrippa",
+           "-d", "--dual", "-q", "--quiet",
+           "-n", "--no-color", "-h", "--help",
+           "-i", "--interactive"]
+
+if "-m" in sys.argv or "--medieval" in sys.argv:
+    Chart = "Medieval house"
+if "-a" in sys.argv or "--agrippa" in sys.argv:
+    Chart = "Agrippa house"
+if "-d" in sys.argv or "--dual" in sys.argv:
+    Double = True
+if "-q" in sys.argv or "--quiet" in sys.argv:
+    Logging = False
+if "-n" in sys.argv or "--no-color" in sys.argv:
+    Color = False
+if sys.argv[-1] in Options:
+    pass
+else:
+    log_file = sys.argv[-1]
+    log_override = True
+
+######### Special characters and strings #########
 
 fg_white = "\u001b[37m"
 fg_red = "\u001b[31m"
@@ -46,11 +73,30 @@ warning_cauda = "[Warning] 1st Mother is Cauda Draconis. Querent won't listen to
 
 if platform.system() == "Windows":
     nl = "\r\n"
-    try:
-        from colorama import init
-        init()
-    except:
-        Color = False
+    if Color:
+        try:
+            from colorama import init
+            init()
+        except:
+            Color = False
+            print("[Error] `colorama` is missing! Color is disabled.")
+
+########## Monochrome mode ##########
+
+if Color == False:
+    fg_white = None
+    fg_red = None
+    fg_yellow = None
+    fg_green = None
+    fg_greenbright = None
+    fg_cyan = None
+    fg_blue = None
+    fg_magenta = None
+    fg_gray = None
+    bold = None
+    underline = None
+    reversal = None
+    reset = None
 
 ########## List of geomantic figures ##########
 
@@ -125,18 +171,18 @@ def colorizePlanet(figure):
 
 ######### Help Text ##########
 
-Help = """\u001b[7m NAME       \u001b[0m
+Help = """{1} NAME       {0}
 
     geomancy.py         Python script to generate geomantic charts.
 
-\u001b[7m SYNOPSIS   \u001b[0m
+{1} SYNOPSIS   {0}
 
     geomancy.py [options] [file]
 
-\u001b[7m DESCRIPTION \u001b[0m
+{1} DESCRIPTION {0}
 
     By default, this script generates a geomantic shield chart and logs it into
-    a plain text file named \u001b[33mgeomancy.log\u001b[0m along with time stamp. Interactive
+    a plain text file named {4}geomancy.log{0} along with time stamp. Interactive
     mode will log the chart into a file named after the querent unless the file
     was explicitly mentioned in the command.
 
@@ -149,72 +195,13 @@ Help = """\u001b[7m NAME       \u001b[0m
     -h, --help          Show this help screen.
     file                Name of log file to use.
 
-    \u001b[4mHOUSE CHART LAYOUT\u001b[0m
+    {2}HOUSE CHART LAYOUT{0}
 
-        \u001b[33m(11)\u001b[0m \u001b[32m(10)\u001b[0m \u001b[31m( 9)\u001b[0m
-    \u001b[34m(12)              ( 8)\u001b[0m            (B)   (A)
-    \u001b[31m( 1)\u001b[0m              \u001b[33m( 7)\u001b[0m               (C)
-    \u001b[32m( 2)\u001b[0m              \u001b[32m( 6)\u001b[0m               (D)
-        \u001b[33m( 3)\u001b[0m \u001b[34m( 4)\u001b[0m \u001b[31m( 5)\u001b[0m
-
-    1-12: Astrological houses           C: Judge
-    A   : Right Witness                 D: Reconciler
-    B   : Left Witness
-    
-    Medieval method of geomancy placess the figures in the astrological houses
-    in order of their generation. Mothers go to Houses 1-4, Daughters go to
-    Houses 5-8, and Nieces go to Houses 9-12.
-    
-    In the \u001b[33mFourth Book of Occult Philosophy\u001b[0m, Pseudo-Agrippa gives a different
-    method of placement. The Mothers are placed in angular houses (1, 10, 7, 4)
-    the Daughters in succedent houses (2, 11, 8, 5); and the Nieces are placed
-    in cadent houses (3, 12, 9, 6). This is the method used by \u001b[33mHermetic Order
-    of Golden Dawn.\u001b[0m
-
-    \u001b[4mCOLOR SCHEME\u001b[0m
-
-    \u001b[7mPlanet          Color                          Element         Color       \u001b[0m
-    \u001b[30;1mSaturn          Gray                           \u001b[31mFire            Red\u001b[0m
-    \u001b[34mJupiter         Blue                           \u001b[33mAir             Yellow\u001b[0m
-    \u001b[31mMars            Red                            \u001b[34mWater           Blue\u001b[0m
-    \u001b[33mSun             Yellow                         \u001b[32mEarth           Green\u001b[0m
-    \u001b[32mVenus           Green\u001b[0m
-    \u001b[36mMercury         Cyan\u001b[0m
-    \u001b[35mMoon            Magenta\u001b[0m
-    Lunar nodes     White
-"""
-
-HelpMono = """ NAME
-
-    geomancy.py         Python script to generate geomantic charts.
-
- SYNOPSIS
-
-    geomancy.py [options] [file]
-
- DESCRIPTION
-
-    By default, this script generates a geomantic shield chart and logs it into
-    a plain text file named 'geomancy.log' along with time stamp. Interactive
-    mode will log the chart into a file named after the querent unless the file
-    was explicitly mentioned in the command.
-
-    -i, --interactive   Ask user prompt before generating charts.
-    -m, --medieval      Generate house chart with medieval arrangement.
-    -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
-    -d, --dual          Generate both shield chart and house chart.
-    -n, --no-color      Disable color output in terminal.
-    -q, --quiet         Disable logging except for errors.
-    -h, --help          Show this help screen.
-    file                Name of log file to use.
-
-    HOUSE CHART LAYOUT
-
-        (11) (10) ( 9)
-    (12)              ( 8)            (B)   (A)
-    ( 1)              ( 7)               (C)
-    ( 2)              ( 6)               (D)
-        ( 3) ( 4) ( 5)
+        {4}(11) {5}(10) {3}( 9)
+    {6}(12)              ( 8){0}           (B)   (A)
+    {3}( 1)              {4}( 7){0}              (C)
+    {5}( 2)              {5}( 6){0}              (D)
+        {4}( 3) {6}( 4) {3}( 5){0}
 
     1-12: Astrological houses           C: Judge
     A   : Right Witness                 D: Reconciler
@@ -224,87 +211,43 @@ HelpMono = """ NAME
     in order of their generation. Mothers go to Houses 1-4, Daughters go to
     Houses 5-8, and Nieces go to Houses 9-12.
     
-    In the 'Fourth Book of Occult Philosophy' Pseudo-Agrippa gives a different
+    In the {4}Fourth Book of Occult Philosophy{0}, Pseudo-Agrippa gives a different
     method of placement. The Mothers are placed in angular houses (1, 10, 7, 4)
     the Daughters in succedent houses (2, 11, 8, 5); and the Nieces are placed
-    in cadent houses (3, 12, 9, 6). This is the method used by Hermetic Order
-    of Golden Dawn.
+    in cadent houses (3, 12, 9, 6). This is the method used by {4}Hermetic Order
+    of Golden Dawn.{0}
 
-    COLOR SCHEME
+    {2}COLOR SCHEME{0}
 
-    Planet          Color                          Element         Color
-    Saturn          Gray                           Fire            Red
-    Jupiter         Blue                           Air             Yellow
-    Mars            Red                            Water           Blue
-    Sun             Yellow                         Earth           Green
-    Venus           Green
-    Mercury         Cyan
-    Moon            Magenta
-    Lunar nodes     Gray
-"""
-
-########## Command line arguments ##########
-
-Chart = "Shield"
-Double = False
-Logging = True
-Interactive = False
-log_override = False
-
-Options = ["-m", "--medieval", "-a", "--agrippa",
-           "-d", "--dual", "-q", "--quiet",
-           "-n", "--no-color", "-h", "--help",
-           "-i", "--interactive"]
-
-if "-m" in sys.argv or "--medieval" in sys.argv:
-    Chart = "Medieval house"
-if "-a" in sys.argv or "--agrippa" in sys.argv:
-    Chart = "Agrippa house"
-if "-d" in sys.argv or "--dual" in sys.argv:
-    Double = True
-if "-q" in sys.argv or "--quiet" in sys.argv:
-    Logging = False
-if "-n" in sys.argv or "--no-color" in sys.argv:
-    Color = False
-if "-h" in sys.argv or "--help" in sys.argv:
-    if Color:
-        print(Help)
-    else:
-        print(HelpMono)
-    quit()
-
-if sys.argv[-1] in Options:
-    pass
-else:
-    log_file = sys.argv[-1]
-    log_override = True
+    {1}Planet          Color                          Element         Color       {0}
+    {9}Saturn          Gray                           {3}Fire            Red
+    {6}Jupiter         Blue                           {4}Air             Yellow
+    {3}Mars            Red                            {6}Water           Blue
+    {4}Sun             Yellow                         {5}Earth           Green
+    {5}Venus           Green
+    {7}Mercury         Cyan
+    {8}Moon            Magenta
+    {10}Lunar nodes     White{0}
+""".format(reset, reversal, underline, fg_red, fg_yellow, fg_green, fg_blue, fg_cyan, fg_magenta, fg_gray, fg_white)
 
 ########## Interactive mode ##########
 
+if "-h" in sys.argv or "--help" in sys.argv:
+    print(Help)
+    quit()
+
 if "-i" in sys.argv or "--interactive" in sys.argv:
     Interactive = True
-    if Color:
-        print(fg_magenta + "="*72)
-        print("Geomantic Chart Generator".center(72))
-        print("="*72 + reset + "\n")
-        querent = input(fg_greenbright + "Name  : " + reset)
-        if log_override == False:
-            log_file = querent + ".log"
-        query = input(fg_greenbright + "Query : " + reset)
-        print(fg_yellow + underline + "\nSelect chart type:\n" + reset)
-        print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
-        asktype = input(fg_greenbright + "[1/2/3] " + reset)
-    else:
-        print("="*72)
-        print("Geomantic Chart Generator".center(72))
-        print("="*72 + "\n")
-        querent = input("Name  : ")
-        if log_override == False:
-            log_file = querent + ".log"
-        query = input("Query : ")
-        print("\nSelect chart type:\n" + "-"*18 )
-        print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
-        asktype = input("[1/2/3] ")
+    print(fg_magenta + "="*72)
+    print("Geomantic Chart Generator".center(72))
+    print("="*72 + reset + "\n")
+    querent = input(fg_greenbright + "Name  : " + reset)
+    if log_override == False:
+        log_file = querent + ".log"
+    query = input(fg_greenbright + "Query : " + reset)
+    print(fg_yellow + underline + "\nSelect chart type:\n" + reset)
+    print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
+    asktype = input(fg_greenbright + "[1/2/3] " + reset)
     if asktype == "2":
         Chart = "Medieval house"
     elif asktype == "3":
@@ -314,6 +257,10 @@ if "-i" in sys.argv or "--interactive" in sys.argv:
     print(" ")
     
 ########## Chart processing starts here ##########
+
+log = None
+if Logging:
+    log = open(log_file, "a+")
 
 CurrentTime = strftime("%Y-%m-%d (%a) %H:%M:%S")
 RawData = []
@@ -352,13 +299,8 @@ Reconciler = xorFigures(Judge, MotherA)
 
 ########## Integrity check ##########
 if Judge in InvalidJudges:
-    if Color:
-        print(fg_red + fatal_error + reset)
-    else:
-        print(fatal_error)
-    log = open(log_file, "a+")
+    print(fg_red + fatal_error + reset)
     log.write(nl + fatal_error + nl)
-    log.close()
 ######################################
 
 # Arrangements for log file
@@ -383,14 +325,10 @@ if Chart == "Agrippa house":
 OutputShield = []
 OutputHouse = []
 
-if Color:
-    for figure in FigureShield:
-        OutputShield.append(colorizeElement(figure))
-    for figure in FigureHouse:
-        OutputHouse.append(colorizePlanet(figure))
-else:
-    OutputShield = FigureShield
-    OutputHouse = FigureHouse
+for figure in FigureShield:
+    OutputShield.append(colorizeElement(figure))
+for figure in FigureHouse:
+    OutputHouse.append(colorizePlanet(figure))
 
 ########## Chart-drawing functions ##########
 
@@ -412,7 +350,6 @@ def drawShield():
         print(s*35 + OutputShield[14][x] + s*25 + OutputShield[15][x])
 
 def logShield():
-    log = open(log_file, "a+")
     if Interactive:
         log.write("="*72 + nl)
         log.write("Name  : " + querent + nl)
@@ -431,7 +368,6 @@ def logShield():
     log.write(nl)
     for x in range(4):
         log.write(s*35 + Judge[x] + s*25 + Reconciler[x] + nl)
-    log.close()
 
 def drawHouse():
     header_text = Chart + " chart generated at " + CurrentTime
@@ -454,7 +390,6 @@ def drawHouse():
         print(s*13 + OutputHouse[2][x] + s*6 + OutputHouse[3][x] + s*6 + OutputHouse[4][x] + s*11 + " | ")
 
 def logHouse():
-    log = open(log_file, "a+")
     if Interactive:
         log.write("="*72 + nl)
         log.write("Name  : " + querent + nl)
@@ -477,47 +412,34 @@ def logHouse():
     log.write(s*46 + "|" + nl)
     for x in range(4):
         log.write(s*13 + FigureHouse[2][x] + s*6 + FigureHouse[3][x] + s*6 + FigureHouse[4][x] + s*11 + " | " + nl)
-    log.close()
 
-########## Script output ##########
+########## Chart output ##########
 
-if Double:
+if Double or Chart == "Shield":
     drawShield()
     if Logging:
         logShield()
-    if Chart == "Shield":
-        Chart = "Medieval house"
+
+if Double and Chart == "Shield":
+    Chart = "Medieval house"
+
+if Chart == "Medieval house" or Chart == "Agrippa house":
     drawHouse()
     if Logging:
         logHouse()
-else:
-    if Chart == "Medieval house" or Chart == "Agrippa house":
-        drawHouse()
-        if Logging:
-            logHouse()
-    else:
-        drawShield()
-        if Logging:
-            logShield()
 
 ########## Warnings for the geomancer ##########
 
-if MotherA == Rubeus and Color:
+if MotherA == Rubeus:
     print(fg_yellow + warning_rubeus + reset)
-elif MotherA == Rubeus and Color == False:
-    print(warning_rubeus)
-elif MotherA == Cauda and Color:
+    if Logging:
+        log.write(warning_rubeus + nl)
+elif MotherA == Cauda:
     print(fg_yellow + warning_cauda + reset)
-elif MotherA == Cauda and Color == False:
-    print(warning_cauda)
+    if Logging:
+        log.write(warning_cauda + nl)
 
-if Logging and MotherA == Rubeus:
-    log = open(log_file, "a+")
-    log.write(warning_rubeus + nl)
-    log.close()
-elif Logging and MotherA == Cauda:
-    log = open(log_file, "a+")
-    log.write(warning_cauda + nl)
+if Logging:
     log.close()
 
 #EOF
