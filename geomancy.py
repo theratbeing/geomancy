@@ -6,8 +6,7 @@ import sys
 import random
 from time import strftime
 
-########## User settings ##########
-log_file = "geomancy.log"
+########## Default settings ##########
 # p and k are used to create and display the figures. p=1; k=2
 p = " x "
 k = "x x"
@@ -16,37 +15,43 @@ k = "x x"
 #k = "o o"
 #p = " * "
 #k = "* *"
-####################################
+Interactive = False
+Chart = "Shield"
+#Chart = "Medieval"
+#Chart = "Agrippa"
+significator = 7
+Luddite = False
+Double = False
+Color = True
+Logging = True
+log_override = False
+log_file = "geomancy.log"
 
 ########## Command line arguments ##########
-Color = True
-Chart = "Shield"
-Double = False
-Logging = True
-Interactive = False
-log_override = False
 
-Options = ["-m", "--medieval", "-a", "--agrippa",
-           "-d", "--dual", "-q", "--quiet",
-           "-n", "--no-color", "-h", "--help",
-           "-i", "--interactive"]
-
-if "-m" in sys.argv or "--medieval" in sys.argv:
-    Chart = "Medieval house"
-if "-a" in sys.argv or "--agrippa" in sys.argv:
-    Chart = "Agrippa house"
-if "-d" in sys.argv or "--dual" in sys.argv:
-    Double = True
-if "-q" in sys.argv or "--quiet" in sys.argv:
-    Logging = False
-if "-n" in sys.argv or "--no-color" in sys.argv:
-    Color = False
-if sys.argv[-1] in Options:
-    pass
-else:
-    log_file = sys.argv[-1]
-    log_override = True
-
+for cmd in sys.argv:
+    if cmd == "-m" or cmd == "--medieval":
+        Chart = "Medieval"
+    elif cmd == "-a" or cmd == "--agrippa":
+        Chart = "Agrippa"
+    elif cmd == "-d" or cmd == "--dual":
+        Double = True
+    elif cmd == "-q" or cmd == "--quiet":
+        Logging = False
+    elif cmd == "-n" or cmd == "--no-color":
+        Color = False
+    elif cmd == "-l" or cmd == "--luddite":
+        Luddite = True
+    elif cmd[:2] == "s=":
+        try:
+            if 0 < int(cmd[2:]) < 13:
+                significator = int(cmd[2:])
+        except:
+            pass
+    else:
+        log_file = cmd
+        log_override = True
+    
 ######### Special characters and strings #########
 
 fg_white = "\u001b[37m"
@@ -66,8 +71,8 @@ reset = "\u001b[0m"
 s = " " # whitespace character for layout
 nl = "\n" # newline
 fatal_error = "[ERROR] Judge is invalid figure! The script is broken :("
-warning_rubeus = "[Warning] 1st Mother is Rubeus. Querent has ulterior motives."
-warning_cauda = "[Warning] 1st Mother is Cauda Draconis. Querent won't listen to advice."
+warning_rubeus = "1st Mother is Rubeus. Querent has ulterior motives."
+warning_cauda = "1st Mother is Cauda Draconis. Querent won't listen to advice."
 
 ########## Windows-only settings ##########
 
@@ -177,7 +182,7 @@ Help = """{1} NAME       {0}
 
 {1} SYNOPSIS   {0}
 
-    geomancy.py [options] [file]
+    geomancy.py [options] [s=n] [file]
 
 {1} DESCRIPTION {0}
 
@@ -187,12 +192,14 @@ Help = """{1} NAME       {0}
     was explicitly mentioned in the command.
 
     -i, --interactive   Ask user prompt before generating charts.
+    -l, --luddite       Disable automatic chart analysis.
     -m, --medieval      Generate house chart with medieval arrangement.
     -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
     -d, --dual          Generate both shield chart and house chart.
     -n, --no-color      Disable color output in terminal.
     -q, --quiet         Disable logging except for errors.
     -h, --help          Show this help screen.
+    s=1 ... s=12        The house number of the quesited.
     file                Name of log file to use.
 
     {2}HOUSE CHART LAYOUT{0}
@@ -216,6 +223,22 @@ Help = """{1} NAME       {0}
     the Daughters in succedent houses (2, 11, 8, 5); and the Nieces are placed
     in cadent houses (3, 12, 9, 6). This is the method used by {4}Hermetic Order
     of Golden Dawn.{0}
+
+    {2}MODES OF PERFECTION{0}
+    
+    When using a house chart, {4}modes of perfection{0} take precedence over the
+    Judge. The modes are:
+    
+    {4}Occupation :{0} the same figure occupies both houses of querent and quesited.
+                 This is the most favorable answer possible.
+    {4}Conjunction:{0} one significator moves next to the other significator.
+                 This shows which party is (or should be) taking initiative.
+    {4}Mutation   :{0} both significators appear together elsewhere in the chart.
+                 The event will take place in a roundabout way.
+    {4}Translation:{0} figure next to significator makes a conjunction.
+                 Help from third party is necessary for success. 
+    
+    {3}Please note that automatic analysis is experimental and unreliable.{0}
 
     {2}COLOR SCHEME{0}
 
@@ -241,21 +264,45 @@ if "-i" in sys.argv or "--interactive" in sys.argv:
     print(fg_magenta + "="*72)
     print("Geomantic Chart Generator".center(72))
     print("="*72 + reset + "\n")
-    querent = input(fg_greenbright + "Name  : " + reset)
-    if log_override == False:
+    querent = input("{}Name  : {}".format(fg_greenbright, reset))
+    if log_override == False and len(querent) > 0:
         log_file = querent + ".log"
-    query = input(fg_greenbright + "Query : " + reset)
-    print(fg_yellow + underline + "\nSelect chart type:\n" + reset)
+    query = input("{}Query : {}".format(fg_greenbright, reset))
+    print("\n{}{}Select chart type:\n{}".format(fg_yellow, underline, reset))
     print("1. Shield chart\n2. Medieval house chart\n3. Agrippa house chart\n")
-    asktype = input(fg_greenbright + "[1/2/3] " + reset)
+    asktype = input("{}[1/2/3] {}".format(fg_greenbright, reset))
     if asktype == "2":
-        Chart = "Medieval house"
+        Chart = "Medieval"
     elif asktype == "3":
-        Chart = "Agrippa house"
+        Chart = "Agrippa"
     else:
         Chart = "Shield"
+    if Chart != "Shield":
+        print("\n{}{}Please select a House to signify the question:{}".format(fg_yellow, underline, reset))
+        print(" 1. The querent.")
+        print(" 2. Movable wealth, personal belongings, finance.")
+        print(" 3. Communication, neighborhood, siblings, short trip.")
+        print(" 4. House, parents and inheritance, land and agriculture, lost items.")
+        print(" 5. Children and games.")
+        print(" 6. Health, employees, servitude, pets and other small animals.")
+        print(" 7. Relationship, spouse, partner, other people.")
+        print(" 8. Death, inheritance from others, magic and occultism.")
+        print(" 9. Religion, spirituality, philosophy, education, art, long journey.")
+        print("10. Career, social standing, government, authority figures, weather.")
+        print("11. Friends, benefactors, luck, desired things.")
+        print("12. Imprisonment, hardships, enemies, conscpiracy.\n")
+        while True:
+            sign = input("{}[1-12] {}".format(fg_greenbright, reset))
+            try:
+                if 0 < int(sign) < 13:
+                    significator = sign
+                    break
+                else:
+                    print("{}Please enter a number between 1 to 12!{}".format(fg_red, reset))
+            except:
+                print("{}Please enter a number between 1 to 12!{}".format(fg_red, reset))
     print(" ")
-    
+
 ########## Chart processing starts here ##########
 
 log = None
@@ -314,7 +361,7 @@ FigureHouse = [MotherA, MotherB, MotherC, MotherD,
                 NieceA, NieceB, NieceC, NieceD,
                 WitnessA, WitnessB, Judge, Reconciler]
 
-if Chart == "Agrippa house":
+if Chart == "Agrippa":
     FigureHouse = [MotherA, DaughterA, NieceA,
                    MotherD, DaughterD, NieceD,
                    MotherC, DaughterC, NieceC,
@@ -370,7 +417,7 @@ def logShield():
         log.write(s*35 + Judge[x] + s*25 + Reconciler[x] + nl)
 
 def drawHouse():
-    header_text = Chart + " chart generated at " + CurrentTime
+    header_text = Chart + " house chart generated at " + CurrentTime
     print("-"*72)    
     print(header_text.center(72))
     print("-"*72)
@@ -390,12 +437,13 @@ def drawHouse():
         print(s*13 + OutputHouse[2][x] + s*6 + OutputHouse[3][x] + s*6 + OutputHouse[4][x] + s*11 + " | ")
 
 def logHouse():
+    log.write("="*72 + nl)
     if Interactive:
-        log.write("="*72 + nl)
-        log.write("Name  : " + querent + nl)
-        log.write("Query : " + query + nl)
+        log.write("Name        : " + querent + nl)
+        log.write("Query       : " + query + nl)
+    log.write("Significator: House " + str(significator) + nl)
     log.write("-"*72 + nl)
-    header_text = Chart + " chart generated at " + CurrentTime
+    header_text = Chart + " house chart generated at " + CurrentTime
     log.write(header_text.center(72) + nl)
     log.write("-"*72 + nl)
     for x in range(4):
@@ -421,23 +469,104 @@ if Double or Chart == "Shield":
         logShield()
 
 if Double and Chart == "Shield":
-    Chart = "Medieval house"
+    Chart = "Medieval"
 
-if Chart == "Medieval house" or Chart == "Agrippa house":
+if Chart == "Medieval" or Chart == "Agrippa":
     drawHouse()
     if Logging:
         logHouse()
 
-########## Warnings for the geomancer ##########
+########## Analysis ##########
 
-if MotherA == Rubeus:
-    print(fg_yellow + warning_rubeus + reset)
+if Luddite == False:
+    print("-"*72)
+    print("{}{}Analysis of the chart:{}".format(fg_magenta, underline, reset))
     if Logging:
-        log.write(warning_rubeus + nl)
-elif MotherA == Cauda:
-    print(fg_yellow + warning_cauda + reset)
-    if Logging:
-        log.write(warning_cauda + nl)
+        log.write("-"*72 + nl)
+        log.write("Analysis of the chart:" + nl)
+    if MotherA == Rubeus:
+        print(fg_yellow + warning_rubeus + reset)
+        if Logging:
+            log.write(warning_rubeus + nl)
+    elif MotherA == Cauda:
+        print(fg_yellow + warning_cauda + reset)
+        if Logging:
+            log.write(warning_cauda + nl)
+
+########## Modes of Perfection ##########
+
+mode_p = 0
+CheckHouse = FigureHouse[:12]
+CheckCourt = FigureShield[11:]
+
+if Chart != "Shield" and Luddite == False:
+    print(fg_blue + "The significator of quesited is House " + str(significator) + reset)
+    significator -= 1
+    # Occupation
+    mode_occupation = False
+    if CheckHouse[0] == CheckHouse[significator]:
+        mode_occupation = True
+        mode_p += 1
+        print("{}Occupation found!{}".format(fg_green, reset))
+        if Logging:
+            log.write("Occupation found!" + nl)
+    else:
+        print("No occupation.")
+    # Conjunction
+    # One of the significators moves to a house directly beside the house of the other significator.
+    mode_conjunction = False
+    if 1 < significator < 11:
+        if CheckHouse[0] == CheckHouse[significator-1] or CheckHouse[0] == CheckHouse[significator+1]:
+            mode_conjunction = True
+            mode_p += 1
+            print("{}Conjunction found!{} Querent is the active party.".format(fg_green, reset))
+            if Logging:
+                log.write("Conjunction found! Querent is the active party." + nl)
+        elif CheckHouse[1] == CheckHouse[significator] or CheckHouse[-1] == CheckHouse[significator]:
+            mode_conjunction = True
+            mode_p += 1
+            print("{}Conjunction found!{} Quesited is the active party.".format(fg_green, reset))
+            if Logging:
+                log.write("Conjunction found! Quesited is the active party." + nl)
+        else:
+            print("No conjunction.")
+    # Mutation
+    # The two significators appear next to each other elsewhere in the chart.
+    mode_mutation = False
+    if mode_conjunction == False:
+        for house_num in range(3, 10):
+            if CheckHouse[house_num] == CheckHouse[0]:
+                if CheckHouse[house_num+1] == CheckHouse[significator] or CheckHouse[house_num-1] == CheckHouse[significator]:
+                    print(fg_green + "Mutation found!" + reset + " Please check House " + str(house_num+1) + ".")
+                    mode_mutation = True
+                    if Logging:
+                        log.write("Mutation found! Please check House " + str(house_num+1) + "." + nl)
+    if mode_mutation:
+        mode_p += 1
+    else:
+        print("No mutation.")
+    # Translation
+    # The same figure appears in houses directly beside the houses of the significators.
+    if 1 < significator < 11:
+        if CheckHouse[1] == CheckHouse[significator-1] or CheckHouse[1] == CheckHouse[significator-1]:
+            mode_p += 1
+            print("{}Translation found!{} See House 2.".format(fg_green, reset))
+            if Logging:
+                log.write("Translation found! See House 2." + nl)
+        elif CheckHouse[-1] == CheckHouse[significator-1] or CheckHouse[1] == CheckHouse[significator-1]:
+            mode_p += 1
+            print("{}Translation found!{} See House 12.".format(fg_green, reset))
+            if Logging:
+                log.write("Translation found! See House 12." + nl)
+        else:
+            print("No translation.")
+    # No perfection
+    if mode_p < 1:
+        print("{}No perfection found.{}".format(fg_red, reset))
+        if Logging:
+            log.write("No perfection found." + nl)
+
+########## Close log ##########
 
 if Logging:
     log.close()
