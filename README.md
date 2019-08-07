@@ -29,9 +29,9 @@ Using `python3 geomancy.py -h` will show you the help screen.
 Color support on Windows requires [colorama](https://pypi.org/project/colorama/) module.
 
 ### Screenshots
-The help screen:
+Text-only chart with simple analysis:
 
-![Help screen](/screenshots/help.png)
+![Text-only analysis](/screenshots/shield_analysis.png)
 
 Interactive mode:
 
