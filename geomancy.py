@@ -42,6 +42,8 @@ for cmd in sys.argv:
     elif cmd == "-S" or cmd == "--shield":
         Chart = "Shield"
         chart_override = True
+    elif cmd == "-i" or cmd == "--interactive":
+        Interactive = True
     elif cmd == "-d" or cmd == "--dual":
         Double = True
     elif cmd == "-q" or cmd == "--quiet":
@@ -52,6 +54,7 @@ for cmd in sys.argv:
         Luddite = True
     elif cmd == "-t" or cmd == "--text":
         Text = True
+        pass
     elif cmd[:2] == "s=":
         try:
             if 0 < int(cmd[2:]) < 13:
@@ -63,6 +66,8 @@ for cmd in sys.argv:
         except ValueError:
             print("[error] `s=` option requires a number from 1 to 12")
             quit()
+    elif cmd == sys.argv[0]:
+        pass
     else:
         log_file = cmd
         log_override = True
@@ -334,8 +339,7 @@ if "-h" in sys.argv or "--help" in sys.argv:
     print(Help)
     quit()
 
-if "-i" in sys.argv or "--interactive" in sys.argv:
-    Interactive = True
+if Interactive:
     print(fg_magenta + "="*72)
     print("Geomantic Chart Generator".center(72))
     print("="*72 + reset + "\n")
@@ -466,26 +470,17 @@ for figure in FigureHouse:
 
 ########## Chart-drawing functions ##########
 
+ShieldLabel = ["1st Mother  :", "2nd Mother  :", "3rd Mother  :", "4th Mother  :",
+               "1st Daughter:", "2nd Daughter:", "3rd Daughter:", "4th Daughter:",
+               "1st Niece   :", "2nd Niece   :", "3rd Niece   :", "4th Niece   :",
+               "R. Witness  :", "L. Witness  :", "Judge       :", "Reconciler  :"]
+
 def drawShieldText():
     print("-"*72)
     print("Shield chart generated at " + CurrentTime)
     print("-"*72)
-    print("1st Mother  : " + OutputShield[0][4])
-    print("2nd Mother  : " + OutputShield[1][4])
-    print("3rd Mother  : " + OutputShield[2][4])
-    print("4th Mother  : " + OutputShield[3][4])
-    print("1st Daughter: " + OutputShield[4][4])
-    print("2nd Daughter: " + OutputShield[5][4])
-    print("3rd Daughter: " + OutputShield[6][4])
-    print("4th Daughter: " + OutputShield[7][4])
-    print("1st Niece   : " + OutputShield[8][4])
-    print("2nd Niece   : " + OutputShield[9][4])
-    print("3rd Niece   : " + OutputShield[10][4])
-    print("4th Niece   : " + OutputShield[11][4])
-    print("\nR. Witness  : " + OutputShield[12][4])
-    print("L. Witness  : " + OutputShield[13][4])
-    print("Judge       : " + OutputShield[14][4])
-    print("Reconciler  : " + OutputShield[15][4])
+    for x in range(16):
+        print("{} {}".format(ShieldLabel[x], OutputShield[x][4]))
 
 def drawShield():
     header_text = "Shield chart generated at " + CurrentTime
@@ -505,49 +500,29 @@ def drawShield():
         print(s*35 + OutputShield[14][x] + s*25 + OutputShield[15][x])
 
 def logShieldText():
-    if Interactive:
-        log.write("="*72 + nl)
-        log.write("Name  : " + querent + nl)
-        log.write("Query : " + query + nl)
-    log.write("-"*72 + nl)
-    log.write("Shield chart generated at " + CurrentTime + nl)
-    log.write("-"*72 + nl)
-    log.write("1st Mother  : " + OutputShield[0][4] + nl)
-    log.write("2nd Mother  : " + OutputShield[1][4] + nl)
-    log.write("3rd Mother  : " + OutputShield[2][4] + nl)
-    log.write("4th Mother  : " + OutputShield[3][4] + nl)
-    log.write("1st Daughter: " + OutputShield[4][4] + nl)
-    log.write("2nd Daughter: " + OutputShield[5][4] + nl)
-    log.write("3rd Daughter: " + OutputShield[6][4] + nl)
-    log.write("4th Daughter: " + OutputShield[7][4] + nl)
-    log.write("1st Niece   : " + OutputShield[8][4] + nl)
-    log.write("2nd Niece   : " + OutputShield[9][4] + nl)
-    log.write("3rd Niece   : " + OutputShield[10][4] + nl)
-    log.write("4th Niece   : " + OutputShield[11][4] + nl)
-    log.write("\nR. Witness  : " + OutputShield[12][4] + nl)
-    log.write("L. Witness  : " + OutputShield[13][4] + nl)
-    log.write("Judge       : " + OutputShield[14][4] + nl)
-    log.write("Reconciler  : " + OutputShield[15][4] + nl)
+    if Logging:
+        log.write("-"*72 + nl)
+        log.write("Shield chart generated at " + CurrentTime + nl)
+        log.write("-"*72 + nl)
+        for x in range(16):
+            print("{} {}{}".format(ShieldLabel[x], FigureShield[x][4], nl))
 
 def logShield():
-    if Interactive:
-        log.write("="*72 + nl)
-        log.write("Name  : " + querent + nl)
-        log.write("Query : " + query + nl)
-    log.write("-"*72 + nl)
-    log.write(s*10 + "Shield chart generated at " + CurrentTime + nl)
-    log.write("-"*72 + nl)
-    for x in range(4):
-        log.write(s*6 + DaughterD[x] + s*5 + DaughterC[x] + s*5 + DaughterB[x] + s*5 + DaughterA[x] + s*5 + MotherD[x] + s*5 + MotherC[x] + s*5 + MotherB[x] + s*5 + MotherA[x] + nl)
-    log.write(nl)
-    for x in range(4):
-        log.write(s*10 + NieceD[x] + s*13 + NieceC[x] + s*13 + NieceB[x] + s*13 + NieceA[x] + nl)
-    log.write(nl)
-    for x in range(4):
-        log.write(s*18 + WitnessB[x] + s*29 + WitnessA[x] + nl)
-    log.write(nl)
-    for x in range(4):
-        log.write(s*35 + Judge[x] + s*25 + Reconciler[x] + nl)
+    if Logging:
+        log.write("-"*72 + nl)
+        log.write(s*10 + "Shield chart generated at " + CurrentTime + nl)
+        log.write("-"*72 + nl)
+        for x in range(4):
+            log.write(s*6 + DaughterD[x] + s*5 + DaughterC[x] + s*5 + DaughterB[x] + s*5 + DaughterA[x] + s*5 + MotherD[x] + s*5 + MotherC[x] + s*5 + MotherB[x] + s*5 + MotherA[x] + nl)
+        log.write(nl)
+        for x in range(4):
+            log.write(s*10 + NieceD[x] + s*13 + NieceC[x] + s*13 + NieceB[x] + s*13 + NieceA[x] + nl)
+        log.write(nl)
+        for x in range(4):
+            log.write(s*18 + WitnessB[x] + s*29 + WitnessA[x] + nl)
+        log.write(nl)
+        for x in range(4):
+            log.write(s*35 + Judge[x] + s*25 + Reconciler[x] + nl)
 
 def drawHouseText():
     print("-"*72)
@@ -560,7 +535,7 @@ def drawHouseText():
             print("House {}: {} #".format(str(i+1), OutputHouse[i][4]))
         else:
             print("House {}: {}".format(str(i+1), OutputHouse[i][4]))
-    print("\nR. Witness: " + OutputHouse[12][4])
+    print("R. Witness: " + OutputHouse[12][4])
     print("L. Witness: " + OutputHouse[13][4])
     print("Judge     : " + OutputHouse[14][4])
     print("Reconciler: " + OutputHouse[15][4])
@@ -586,62 +561,64 @@ def drawHouse():
         print(s*13 + OutputHouse[2][x] + s*6 + OutputHouse[3][x] + s*6 + OutputHouse[4][x] + s*11 + " | ")
 
 def logHouseText():
-    log.write("-"*72 + nl)
-    if Interactive:
-        log.write("Name        : " + querent + nl)
-        log.write("Query       : " + query + nl)
-    log.write("Significator: House " + str(significator) + nl)
-    log.write("-"*72 + nl)
-    log.write(Chart + " house chart generated at " + CurrentTime + nl)
-    log.write("-"*72 + nl)
-    for i in range(12):
-        if i == 0 or rawHouse[i] == rawHouse[0]:
-            log.write("House {}: {} *{}".format(str(i+1), FigureHouse[i][4], nl))
-        elif (i+1) == significator or rawHouse[i] == rawHouse[significator-1]:
-            print("House {}: {} #{}".format(str(i+1), FigureHouse[i][4], nl))
-        else:
-            print("House {}: {}{}".format(str(i+1), FigureHouse[i][4], nl))
-    log.write(nl + "R. Witness: " + FigureHouse[12][4] + nl)
-    log.write("L. Witness: " + FigureHouse[13][4] + nl)
-    log.write("Judge     : " + FigureHouse[14][4] + nl)
-    log.write("Reconciler: " + FigureHouse[15][4] + nl)
+    if Logging:
+        log.write("-"*72 + nl)
+        log.write(Chart + " house chart generated at " + CurrentTime + nl)
+        log.write("-"*72 + nl)
+        for i in range(12):
+            if i == 0 or rawHouse[i] == rawHouse[0]:
+                log.write("House {}: {} *{}".format(str(i+1), FigureHouse[i][4], nl))
+            elif (i+1) == significator or rawHouse[i] == rawHouse[significator-1]:
+                print("House {}: {} #{}".format(str(i+1), FigureHouse[i][4], nl))
+            else:
+                print("House {}: {}{}".format(str(i+1), FigureHouse[i][4], nl))
+        log.write("R. Witness: " + FigureHouse[12][4] + nl)
+        log.write("L. Witness: " + FigureHouse[13][4] + nl)
+        log.write("Judge     : " + FigureHouse[14][4] + nl)
+        log.write("Reconciler: " + FigureHouse[15][4] + nl)
 
 def logHouse():
-    log.write("="*72 + nl)
-    if Interactive:
-        log.write("Name        : " + querent + nl)
-        log.write("Query       : " + query + nl)
-    log.write("Significator: House " + str(significator) + nl)
-    log.write("-"*72 + nl)
-    header_text = Chart + " house chart generated at " + CurrentTime
-    log.write(header_text.center(72) + nl)
-    log.write("-"*72 + nl)
-    for x in range(4):
-        log.write(s*13 + FigureHouse[10][x] + s*6 + FigureHouse[9][x] + s*6 + FigureHouse[8][x] + s*11 + " | " + nl)
-    log.write(s*46 + "|" + nl)
-    for x in range(4):
-        log.write(s*6 + FigureHouse[11][x] + s*29 + FigureHouse[7][x] + s*4 + " | " + s*4 + WitnessB[x] + s*8 + WitnessA[x] + nl)
-    log.write(s*46 + "|" + nl)
-    for x in range(4):
-        log.write(s*6 + FigureHouse[0][x] + s*29 + FigureHouse[6][x] + s*4 + " | " + s*10 + Judge[x] + nl)
-    log.write(s*46 + "|" + nl)
-    for x in range(4):
-        log.write(s*6 + FigureHouse[1][x] + s*29 + FigureHouse[5][x] + s*4 + " | " + s*10 + Reconciler[x] + nl)
-    log.write(s*46 + "|" + nl)
-    for x in range(4):
-        log.write(s*13 + FigureHouse[2][x] + s*6 + FigureHouse[3][x] + s*6 + FigureHouse[4][x] + s*11 + " | " + nl)
+    if Logging:
+        log.write("-"*72 + nl)
+        header_text = Chart + " house chart generated at " + CurrentTime
+        log.write(header_text.center(72) + nl)
+        log.write("-"*72 + nl)
+        for x in range(4):
+            log.write(s*13 + FigureHouse[10][x] + s*6 + FigureHouse[9][x] + s*6 + FigureHouse[8][x] + s*11 + " | " + nl)
+        log.write(s*46 + "|" + nl)
+        for x in range(4):
+            log.write(s*6 + FigureHouse[11][x] + s*29 + FigureHouse[7][x] + s*4 + " | " + s*4 + WitnessB[x] + s*8 + WitnessA[x] + nl)
+        log.write(s*46 + "|" + nl)
+        for x in range(4):
+            log.write(s*6 + FigureHouse[0][x] + s*29 + FigureHouse[6][x] + s*4 + " | " + s*10 + Judge[x] + nl)
+        log.write(s*46 + "|" + nl)
+        for x in range(4):
+            log.write(s*6 + FigureHouse[1][x] + s*29 + FigureHouse[5][x] + s*4 + " | " + s*10 + Reconciler[x] + nl)
+        log.write(s*46 + "|" + nl)
+        for x in range(4):
+            log.write(s*13 + FigureHouse[2][x] + s*6 + FigureHouse[3][x] + s*6 + FigureHouse[4][x] + s*11 + " | " + nl)
 
 ########## Chart output ##########
+
+def prynt(msg):
+    if Logging:
+        log.write(msg + nl)
+
+if Logging:
+    log.write("="*72 + nl)
+    if Interactive:
+        log.write("Name : {}{}".format(querent, nl))
+        log.write("Query: {}{}".format(query, nl))
+    if Chart != "Shield":
+        log.write("Quesited: House {}{}".format(significator, nl))
 
 if Double or Chart == "Shield":
     if Text:
         drawShieldText()
-        if Logging:
-            logShieldText()
+        logShieldText()
     else:
         drawShield()
-        if Logging:
-            logShield()
+        logShield()
 
 if Double and Chart == "Shield":
     Chart = "Medieval"
@@ -649,29 +626,24 @@ if Double and Chart == "Shield":
 if Chart == "Medieval" or Chart == "Agrippa":
     if Text:
         drawHouseText()
-        if Logging:
-            logHouseText()
+        logHouseText()
     else:
         drawHouse()
-        if Logging:
-            logHouse()
+        logHouse()
 
 ########## Analysis ##########
 
 if Luddite == False:
     print("-"*72)
     print("{}{}Analysis of the chart:{}".format(fg_magenta, underline, reset))
-    if Logging:
-        log.write("-"*72 + nl)
-        log.write("Analysis of the chart:" + nl + nl)
+    prynt("-"*72)
+    prynt("Analysis of the chart:")
     if MotherA[0:4] == Rubeus:
         print("\n" + warning_rubeus)
-        if Logging:
-            log.write(warning_rubeus + nl)
+        prynt(nl + warning_rubeus)
     elif MotherA[0:4] == Cauda:
         print("\n" + warning_cauda)
-        if Logging:
-            log.write(warning_cauda + nl)
+        prynt(nl + warning_cauda)
 
 # Court figures and Way of Points
 
@@ -691,80 +663,109 @@ def msg_trp(n):
                "{}(2){} Events and actions surrounding the querent.".format(fg_yellow, reset),
                "{}(3){} Places frequently visited by the querent.".format(fg_blue, reset),
                "{}(4){} People other than the querent.".format(fg_green, reset)]
+    rmessage = ["There is no hidden influence in this reading.",
+               "(1) Querent's personality and habit.",
+               "(2) Events and actions surrounding the querent.",
+               "(3) Places frequently visited by the querent.",
+               "(4) People other than the querent."]
     print(message[n])
+    if Logging:
+        log.write(rmessage[n] + nl)
 
 def explain_shield(n):
     i = id_fig(FigureShield[n-1][0:4])
     return "{}:\n{}{}".format(OutputShield[n-1][4], s*4, FigMean[i])
 
+def l_explain_shield(n):
+    i = id_fig(FigureShield[n-1][0:4])
+    return "{}:{}{}{}".format(FigureShield[n-1][4], nl, s*4, FigMean[i])
+
 if Luddite == False:
     if Double or Chart == "Shield":
         # Analysis of the Court
         print("\n{}The answer{} to your question is {}".format(fg_magenta, reset, explain_shield(15)))
+        prynt("{}The answer to your question is {}".format(nl, l_explain_shield(15)))
         print("\n{}The past{}, or internal factor is {}".format(fg_magenta, reset, explain_shield(13)))
+        prynt("{}The past, or internal factor is {}".format(nl, l_explain_shield(13)))
         print("\n{}The future{}, or external factor is {}".format(fg_magenta, reset, explain_shield(14)))
+        prynt("{}The future, or external factor is {}".format(nl, l_explain_shield(14)))
         # Way of the Points
         print("\n{}Way of the Points{} leads to:".format(fg_magenta, reset))
         if WitnessA[0] == WitnessB[0]:
             if WitnessA[0] != Judge[0]:
                 print("    (none)")
+                prynt("    (none)")
                 msg_trp(0)
         # First branch
         if WitnessA[0] == Judge[0]:
             print("    {}Right Witness{}".format(fg_yellow, reset))
+            prynt("    Right Witness")
             PointMap[13] = 1
             flag_a = True
             if NieceA[0] == Judge[0]:
                 print("        {}1st Niece (1){}".format(fg_green, reset))
+                prynt("        1st Niece (1)")
                 PointMap[9] = 1
                 flag_b = True
                 if MotherA[0] == Judge[0]:
                     print("            {}1st Mother (1){}".format(fg_cyan, reset))
+                    prynt("            1st Mother (1)")
                     PointMap[1] = 1
                     flag_c = True
                 if MotherB[0] == Judge[0]:
                     print("            {}2nd Mother (1){}".format(fg_cyan, reset))
+                    prynt("            2nd Mother (1)")
                     PointMap[2] = 1
                     flag_c = True
             if NieceB[0] == Judge[0]:
                 print("        {}2nd Niece (2){}".format(fg_green, reset))
+                prynt("        2nd Niece (2)")
                 PointMap[10] = 1
                 flag_b = True
                 if MotherC[0] == Judge[0]:
                     print("            {}3rd Mother (2){}".format(fg_cyan, reset))
+                    prynt("            3rd Mother (2)")
                     PointMap[3] = 1
                     flag_c = True
                 if MotherD[0] == Judge[0]:
                     print("            {}4th Mother (2){}".format(fg_cyan, reset))
+                    prynt("            4th Mother (2)")
                     PointMap[4] = 1
                     flag_c = True
         # Second branch
         if WitnessB[0] == Judge[0]:
             print("    {}Left Witness{}".format(fg_yellow, reset))
+            prynt("    Left Witness")
             PointMap[14] = 1
             flag_a = True
             if NieceC[0] == Judge[0]:
                 print("        {}3rd Niece (3){}".format(fg_green, reset))
+                prynt("        3rd Niece (3)")
                 PointMap[11] = 1
                 flag_b = True
                 if DaughterA[0] == Judge[0]:
                     print("            {}1st Daughter (3){}".format(fg_cyan, reset))
+                    prynt("            1st Daughter (3)")
                     PointMap[5] = 1
                     flag_c = True
                 if DaughterB[0] == Judge[0]:
                     print("            {}2nd Daughter (3){}".format(fg_cyan, reset))
+                    prynt("            2nd Daughter (3)")
                     PointMap[6] = 1
                     flag_c = True
             if NieceD[0] == Judge[0]:
                 print("        {}4th Niece (4){}".format(fg_green, reset))
+                prynt("        4th Niece (4)")
                 PointMap[12] = 1
                 flag_b = True
                 if DaughterC[0] == Judge[0]:
                     print("            {}3rd Daughter (4){}".format(fg_cyan, reset))
+                    prynt("            3rd Daughter (4)")
                     PointMap[7] = 1
                     flag_c = True
                 if DaughterD[0] == Judge[0]:
                     print("            {}4th Daughter (4){}".format(fg_cyan, reset))
+                    prynt("            4th Daughter (4)")
                     PointMap[8] = 1
                     flag_c = True
         # Triplicity check
@@ -785,6 +786,7 @@ if Luddite == False:
             flag_a = False
             if PointMap[9] == 1:
                 msg_trp(1)
+                
             if PointMap[10] == 1:
                 msg_trp(2)
             if PointMap[11] == 1:
@@ -796,10 +798,10 @@ if Luddite == False:
         if flag_a and flag_1:
             if PointMap[13] == 1:
                 print("{}Right Witness{}: the past or internal factors.".format(fg_gray, reset))
+                prynt("Right Witness: the past or internal factors.")
             if PointMap[14] == 1:
                 print("{}Left Witness{}: the unknown or external factors.".format(fg_cyan, reset))
-        else:
-            pass
+                prynt("Left Witness: the unknown or external factors.")
 
 ########## Modes of Perfection ##########
 
@@ -807,55 +809,48 @@ mode_p = 0
 CheckHouse = rawHouse[:12]
 
 if Chart != "Shield" and Luddite == False:
+    print("{}Modes of Perfection:{}".format(fg_magenta, reset))
+    prynt("Modes of Perfection:")
     print("The significator of quesited is " + fg_blue + "House " + str(significator) + reset)
     significator -= 1
     # Occupation
     if CheckHouse[0] == CheckHouse[significator]:
         mode_p += 1
         print("{}Occupation found!{}".format(fg_green, reset))
-        if Logging:
-            log.write("Occupation found!" + nl)
+        prynt("Occupation found!")
     # Conjunction
     # One of the significators moves to a house directly beside the house of the other significator.
     if 1 < significator < 11:
         if CheckHouse[0] == CheckHouse[significator-1] or CheckHouse[0] == CheckHouse[significator+1]:
             mode_p += 1
             print("{}Conjunction found!{} Querent is the active party.".format(fg_green, reset))
-            if Logging:
-                log.write("Conjunction found! Querent is the active party." + nl)
+            prynt("Conjunction found! Querent is the active party.")
         elif CheckHouse[1] == CheckHouse[significator] or CheckHouse[-1] == CheckHouse[significator]:
             mode_p += 1
             print("{}Conjunction found!{} Quesited is the active party.".format(fg_green, reset))
-            if Logging:
-                log.write("Conjunction found! Quesited is the active party." + nl)
+            prynt("Conjunction found! Quesited is the active party.")
         # Mutation
         # The two significators appear next to each other elsewhere in the chart.
         for house_num in range(3, 10):
             if CheckHouse[house_num] == CheckHouse[0]:
                 if CheckHouse[house_num+1] == CheckHouse[significator] or CheckHouse[house_num-1] == CheckHouse[significator]:
-                    print(fg_green + "Mutation found!" + reset + " Please check House " + str(house_num+1) + ".")
+                    print("{}Mutation found!{} Please check House {}.".format(fg_green, reset, str(house_num+1)))
                     mode_p += 1
-                    if Logging:
-                        log.write("Mutation found! Please check House " + str(house_num+1) + "." + nl)
+                    prynt("Mutation found! Please check House {}.".format(str(house_num+1)))
         # Translation
         # The same figure appears in houses directly beside the houses of the significators.
         if CheckHouse[1] == CheckHouse[significator-1] or CheckHouse[1] == CheckHouse[significator-1]:
             mode_p += 1
             print("{}Translation found!{} See House 2.".format(fg_green, reset))
-            if Logging:
-                log.write("Translation found! See House 2." + nl)
+            prynt("Translation found! See House 2.")
         elif CheckHouse[-1] == CheckHouse[significator-1] or CheckHouse[1] == CheckHouse[significator-1]:
             mode_p += 1
             print("{}Translation found!{} See House 12.".format(fg_green, reset))
-            if Logging:
-                log.write("Translation found! See House 12." + nl)
+            prynt("Translation found! See House 12.")
     # No perfection
     if mode_p < 1:
         print("{}No perfection found.{}".format(fg_red, reset))
-        if Logging:
-            log.write("No perfection found." + nl)
-
-#Test
+        prynt("No perfection found.")
 
 ########## Close log ##########
 
