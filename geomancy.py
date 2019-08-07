@@ -151,19 +151,19 @@ FigName = ["Populus", "Laetitia", "Rubeus", "Fortuna Minor",
 
 FigMean = ["Crowd, multitude, assembly. Neutral figure.",
            "Happiness, good health.",
-           "Passion, vice, hot temper. Negative.",
+           "Passion, vice, hot temper. Unfavorable.",
            "Outside help, outer honor, quick result. Good for endings.",
-           "Peace, wisdom, patience. Positive but weak.",
+           "Peace, wisdom, patience. Favorable but weak.",
            "Loss. Bad for wealth but good for love.",
            "Combination, mixed results.",
-           "Endings, going away, descending. Negative.",
-           "Sorrow, illness. Negative except for land and agriculture.",
-           "Restriction, obstacles. Negative.",
-           "Gain. Positive.",
-           "Male, power, reckless action. Negative except for love and war.",
+           "Endings, going away, descending. Unfavorable.",
+           "Sorrow, illness. Bad except for land and agriculture.",
+           "Restriction, obstacles.",
+           "Gain.",
+           "Male, power, reckless action. Bad except for love and war.",
            "Success through one's effort. Good for beginnings.",
-           "Female, beauty. Positive but fickle.",
-           "Beginnings, moving in, ascending. Positive.",
+           "Female, beauty. Good but fickle.",
+           "Beginnings, moving in, ascending. Favorable.",
            "Road, journey, change of fortune."]
 
 def id_fig(f):
@@ -527,7 +527,7 @@ def logShieldText():
         log.write("Shield chart generated at " + CurrentTime + nl)
         log.write("-"*72 + nl)
         for x in range(16):
-            print("{} {}{}".format(ShieldLabel[x], FigureShield[x][4], nl))
+            log.write("{} {}{}".format(ShieldLabel[x], FigureShield[x][4], nl))
 
 def logShield():
     if Logging:
@@ -591,9 +591,9 @@ def logHouseText():
             if i == 0 or rawHouse[i] == rawHouse[0]:
                 log.write("House {}: {} *{}".format(str(i+1), FigureHouse[i][4], nl))
             elif (i+1) == significator or rawHouse[i] == rawHouse[significator-1]:
-                print("House {}: {} #{}".format(str(i+1), FigureHouse[i][4], nl))
+                log.write("House {}: {} #{}".format(str(i+1), FigureHouse[i][4], nl))
             else:
-                print("House {}: {}{}".format(str(i+1), FigureHouse[i][4], nl))
+                log.write("House {}: {}{}".format(str(i+1), FigureHouse[i][4], nl))
         log.write("R. Witness: " + FigureHouse[12][4] + nl)
         log.write("L. Witness: " + FigureHouse[13][4] + nl)
         log.write("Judge     : " + FigureHouse[14][4] + nl)
@@ -701,6 +701,14 @@ def explain_shield(n):
 def l_explain_shield(n):
     i = id_fig(FigureShield[n-1][0:4])
     return "{}:{}{}{}".format(FigureShield[n-1][4], nl, s*4, FigMean[i])
+
+def explain_house(n):
+    i = id_fig(FigureHouse[n-1][0:4])
+    return "{}:\n{}{}".format(OutputHouse[n-1][4], s*4, FigMean[i])
+
+def l_explain_house(n):
+    i = id_fig(FigureHouse[n-1][0:4])
+    return "{}:{}{}{}".format(FigureHouse[n-1][4], nl, s*4, FigMean[i])
 
 if Luddite == False:
     if Double or Chart == "Shield":
@@ -831,8 +839,12 @@ mode_p = 0
 CheckHouse = rawHouse[:12]
 
 if Chart != "Shield" and Luddite == False:
-    print("{}Modes of Perfection:{}".format(fg_magenta, reset))
-    prynt("Modes of Perfection:")
+    print("\nThe querent is described by {}".format(explain_house(1)))
+    prynt("{}The querent is described by {}".format(nl, l_explain_house(1)))
+    print("\nThe quesited is described by {}".format(explain_house(significator)))
+    prynt("{}The quesited is described by {}".format(nl, l_explain_house(significator)))
+    print("\n{}Modes of Perfection:{}".format(fg_magenta, reset))
+    prynt(nl + "Modes of Perfection:")
     print("The significator of quesited is " + fg_blue + "House " + str(significator) + reset)
     significator -= 1
     # Occupation
