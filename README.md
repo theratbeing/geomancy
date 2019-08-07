@@ -1,22 +1,24 @@
 # geomancy.py
-Python3 script to generate geomantic divination charts.
+Python script to generate charts used in geomancy divination method.
 
 ### Features
-* Chart analysis: automatically detects modes of perfection (2019-08-02).
+* Chart analysis: automatically detects modes of perfection and way of points.
 
-* Color output: figures have different color depending on its correspondence and the chart type. (2019-07-31)
+* Color output: figures have different color depending on its correspondence and the chart type.
 
-* Interactive mode: the script asks for querent name, the query, and chart type before generating a chart (2019-07-24). Each querent will have their own log file (2019-08-01). 
+* Interactive mode: the script asks for querent name, the query, and chart type before generating a chart. Each querent will have their own log file. 
 
 * Automatic logging: output will be automatically written to a file.
 
-* Agrippa/Golden Dawn house chart: Mothers are placed in angular houses, Daughters are placed in succedent houses, Nieces are placed in cadent houses.
+**Avilable chart types:**
 
-* Medieval-style simple house chart: figures are placed following the order of their generation.
+Agrippa/Golden Dawn house chart: Mothers are placed in angular houses, Daughters are placed in succedent houses, Nieces are placed in cadent houses.
 
-* Traditional shield chart including the Reconciler.
+Medieval-style simple house chart: figures are placed following the order of their generation.
 
-*Note: this script does not provide interpretation for the reading.*
+Traditional shield chart including the Reconciler.
+
+*You can tell the script to only output names of figures.*
 
 ### How to use
 Launch it from the terminal/command line with `python3 geomancy.py`.
