@@ -33,7 +33,10 @@ log_file = "geomancy.log"
 ########## Command line arguments ##########
 
 for cmd in sys.argv:
-    if cmd == "-m" or cmd == "--medieval":
+    if cmd == sys.argv[0]:
+        # Must be ignored to prevent bug
+        pass
+    elif cmd == "-m" or cmd == "--medieval":
         Chart = "Medieval"
         chart_override = True
     elif cmd == "-a" or cmd == "--agrippa":
@@ -66,8 +69,6 @@ for cmd in sys.argv:
         except ValueError:
             print("[error] `s=` option requires a number from 1 to 12")
             quit()
-    elif cmd == sys.argv[0]:
-        pass
     else:
         log_file = cmd
         log_override = True
@@ -270,22 +271,40 @@ Help = """{1} NAME       {0}
     a plain text file named {4}geomancy.log{0} along with time stamp. Interactive
     mode will log the chart into a file named after the querent unless the file
     was explicitly mentioned in the command.
+    
+    {2}GENERAL OPTIONS{0}
 
     -i, --interactive   Ask user prompt before generating charts.
-    -l, --luddite       Disable automatic chart analysis.
+    -l, --luddite       Disable chart analysis.
+    -n, --no-color      Disable color output in terminal.
+    -q, --quiet         Disable logging.
+    -h, --help          Show this help screen.
+    file                Name of log file to use.
+
+    {2}CHART OPTIONS{0}
+    
+    -S, --shield        Generate shield chart (default).
     -m, --medieval      Generate house chart with medieval arrangement.
     -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
     -d, --dual          Generate both shield chart and house chart.
-    -n, --no-color      Disable color output in terminal.
-    -q, --quiet         Disable logging except for errors.
-    -h, --help          Show this help screen.
-    s=1 ... s=12        The house number of the quesited.
-    file                Name of log file to use.
+    s=n, s=1, s=12      Set the significator of quesited to house n. Default: 7.
+
+    {2}SHIELD CHART LAYOUT{0}
+    
+    {5}(D4)  (D3)  {6}(D2)  (D1)  {4}(M4)  (M3)  {3}(M2)  (M1)
+       {5}(N4)        {6}(N3)        {4}(N2)        {3}(N1)
+             {7}(LW)                    {9}(RW){0}
+                         (JD)                 (RC)
+    
+    M : Mothers                         RW: Right Witness
+    D : Daughters                       LW: Left Witness
+    N : Nieces                          JD: Judge
+                                        RC: Reconciler
 
     {2}HOUSE CHART LAYOUT{0}
 
         {4}(11) {5}(10) {3}( 9)
-    {6}(12)              ( 8){0}           (B)   (A)
+    {6}(12)              ( 8)           {7}(B)   {9}(A)
     {3}( 1)              {4}( 7){0}              (C)
     {5}( 2)              {5}( 6){0}              (D)
         {4}( 3) {6}( 4) {3}( 5){0}
@@ -304,6 +323,22 @@ Help = """{1} NAME       {0}
     in cadent houses (3, 12, 9, 6). This is the method used by {4}Hermetic Order
     of Golden Dawn.{0}
 
+    {2}COLOR SCHEME{0}
+
+    {1}Planet          Color                          Element         Color       {0}
+    {9}Saturn          Gray                           {3}Fire            Red
+    {6}Jupiter         Blue                           {4}Air             Yellow
+    {3}Mars            Red                            {6}Water           Blue
+    {4}Sun             Yellow                         {5}Earth           Green
+    {5}Venus           Green
+    {7}Mercury         Cyan
+    {8}Moon            Magenta
+    {10}Lunar nodes     White{0}
+
+{1} ANALYSIS    {0}
+
+    {3}Please note that chart analysis is experimental and unreliable.{0}
+
     {2}MODES OF PERFECTION{0}
     
     When using a house chart, {4}modes of perfection{0} take precedence over the
@@ -318,19 +353,6 @@ Help = """{1} NAME       {0}
     {4}Translation:{0} figure next to significator makes a conjunction.
                  Help from third party is necessary for success. 
     
-    {3}Please note that automatic analysis is experimental and unreliable.{0}
-
-    {2}COLOR SCHEME{0}
-
-    {1}Planet          Color                          Element         Color       {0}
-    {9}Saturn          Gray                           {3}Fire            Red
-    {6}Jupiter         Blue                           {4}Air             Yellow
-    {3}Mars            Red                            {6}Water           Blue
-    {4}Sun             Yellow                         {5}Earth           Green
-    {5}Venus           Green
-    {7}Mercury         Cyan
-    {8}Moon            Magenta
-    {10}Lunar nodes     White{0}
 """.format(reset, reversal, underline, fg_red, fg_yellow, fg_green, fg_blue, fg_cyan, fg_magenta, fg_gray, fg_white)
 
 ########## Interactive mode ##########
