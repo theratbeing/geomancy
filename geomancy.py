@@ -32,32 +32,41 @@ log_file = "geomancy.log"
 
 ########## Command line arguments ##########
 
-for cmd in sys.argv:
+for cmd in sys.argv[1:]:
     if cmd == sys.argv[0]:
-        # Must be ignored to prevent bug
-        pass
+        print("[error] Can't write log to self.")
+        quit()
     elif cmd == "-m" or cmd == "--medieval":
         Chart = "Medieval"
         chart_override = True
     elif cmd == "-a" or cmd == "--agrippa":
         Chart = "Agrippa"
         chart_override = True
-    elif cmd == "-S" or cmd == "--shield":
+    elif cmd == "-s" or cmd == "--shield":
         Chart = "Shield"
         chart_override = True
     elif cmd == "-i" or cmd == "--interactive":
         Interactive = True
+    elif cmd == "-I" or cmd == "--instant":
+        Interactive = False
     elif cmd == "-d" or cmd == "--dual":
         Double = True
     elif cmd == "-q" or cmd == "--quiet":
         Logging = False
+    elif cmd == "-r" or cmd == "--record":
+        Logging = True
+    elif cmd == "-c" or cmd == "--color":
+        Color = True
     elif cmd == "-n" or cmd == "--no-color":
         Color = False
+    elif cmd == "-z" or cmd == "--analyze":
+        Luddite = False
     elif cmd == "-l" or cmd == "--luddite":
         Luddite = True
     elif cmd == "-t" or cmd == "--text":
         Text = True
-        pass
+    elif cmd == "-g" or cmd == "--graphic":
+        Text = False
     elif cmd[:2] == "s=":
         try:
             if 0 < int(cmd[2:]) < 13:
@@ -91,7 +100,7 @@ reset = "\u001b[0m"
 
 s = " " # whitespace character for layout
 nl = "\n" # newline
-fatal_error = "[ERROR] Judge is invalid figure! The script is broken :("
+fatal_error = "[error] Judge is invalid figure! The script is broken :("
 warning_rubeus = "1st Mother is Rubeus. Querent has ulterior motives."
 warning_cauda = "1st Mother is Cauda Draconis. Querent won't listen to advice."
 
@@ -274,20 +283,26 @@ Help = """{1} NAME       {0}
     
     {2}GENERAL OPTIONS{0}
 
-    -i, --interactive   Ask user prompt before generating charts.
-    -l, --luddite       Disable chart analysis.
-    -n, --no-color      Disable color output in terminal.
+    -i, --interactive   Ask questions before generating charts.
+    -I, --instant       Skip questions and generate chart (default).
+    -c, --color         Enable color (default).
+    -n, --no-color      Disable color.
+    -r, --record        Write output to file (default).
     -q, --quiet         Disable logging.
     -h, --help          Show this help screen.
     file                Name of log file to use.
 
     {2}CHART OPTIONS{0}
-    
+
+    -g, --graphic       Draw figures (default).
+    -t, --text          Show only figure names.
     -S, --shield        Generate shield chart (default).
     -m, --medieval      Generate house chart with medieval arrangement.
     -a, --agrippa       Generate house chart with Pseudo-Agrippa's arrangement.
     -d, --dual          Generate both shield chart and house chart.
-    s=n, s=1, s=12      Set the significator of quesited to house n. Default: 7.
+    s=n, s=1, s=12      Set the house of quesited to house n (default: 7).
+    -z, --analyze       Analyze the chart (default).
+    -l, --luddite       Disable chart analysis.
 
     {2}SHIELD CHART LAYOUT{0}
     
@@ -339,18 +354,33 @@ Help = """{1} NAME       {0}
 
     {3}Please note that chart analysis is experimental and unreliable.{0}
 
+    {2}WAY OF THE POINTS{0}
+    
+    {4}Way of the Points{0} or {4}Via Puncti{0} is a method to seek hidden influences
+    in a situation. Figures with the same top line as the Judge are traced until
+    it reaches the top or stops midway. Which {4}triplicity{0} the way ended in shows
+    the source of influence.
+    
+    {3}(*){0} 1st Triplicity (M1, M2, N1): querent's personality and habit.
+    {4}(*){0} 2nd Triplicity (M3, M4, N2): events and actions around the querent.
+    {6}(*){0} 3rd Triplicity (D1, D2, N3): places frequently visited by querent.
+    {5}(*){0} 4th Triplicity (D3, D4, N4): people other than querent.
+    
+    The figures in each Triplicity are interpreted in the same way as the {4}Court{0}
+    (Witnesses and Judge).
+
     {2}MODES OF PERFECTION{0}
     
     When using a house chart, {4}modes of perfection{0} take precedence over the
     Judge. The modes are:
     
-    {4}Occupation :{0} the same figure occupies both houses of querent and quesited.
+    {5}Occupation :{0} the same figure occupies both houses of querent and quesited.
                  This is the most favorable answer possible.
-    {4}Conjunction:{0} one significator moves next to the other significator.
+    {5}Conjunction:{0} one significator moves next to the other significator.
                  This shows which party is (or should be) taking initiative.
-    {4}Mutation   :{0} both significators appear together elsewhere in the chart.
+    {5}Mutation   :{0} both significators appear together elsewhere in the chart.
                  The event will take place in a roundabout way.
-    {4}Translation:{0} figure next to significator makes a conjunction.
+    {5}Translation:{0} figure next to significator makes a conjunction.
                  Help from third party is necessary for success. 
     
 """.format(reset, reversal, underline, fg_red, fg_yellow, fg_green, fg_blue, fg_cyan, fg_magenta, fg_gray, fg_white)
@@ -681,15 +711,15 @@ flag_c = False
 
 def msg_trp(n):
     message = ["There is no hidden influence in this reading.",
-               "{}(1){} Querent's personality and habit.".format(fg_red, reset),
-               "{}(2){} Events and actions surrounding the querent.".format(fg_yellow, reset),
-               "{}(3){} Places frequently visited by the querent.".format(fg_blue, reset),
-               "{}(4){} People other than the querent.".format(fg_green, reset)]
+               "{}(1){} Personality and habit.".format(fg_red, reset),
+               "{}(2){} Events and actions.".format(fg_yellow, reset),
+               "{}(3){} Frequently visited places.".format(fg_blue, reset),
+               "{}(4){} Other people".format(fg_green, reset)]
     rmessage = ["There is no hidden influence in this reading.",
-               "(1) Querent's personality and habit.",
-               "(2) Events and actions surrounding the querent.",
-               "(3) Places frequently visited by the querent.",
-               "(4) People other than the querent."]
+               "(1) Personality and habit.",
+               "(2) Events and actions.",
+               "(3) Frequently visited places.",
+               "(4) Other people."]
     print(message[n])
     if Logging:
         log.write(rmessage[n] + nl)
