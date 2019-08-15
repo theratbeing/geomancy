@@ -35,7 +35,7 @@ log_file = "geomancy.log"
 for cmd in sys.argv[1:]:
     if cmd == sys.argv[0]:
         print("[error] Can't write log to self.")
-        quit()
+        sys.exit()
     elif cmd == "-m" or cmd == "--medieval":
         Chart = "Medieval"
         chart_override = True
@@ -74,10 +74,10 @@ for cmd in sys.argv[1:]:
                 sig_override = True
             else:
                 print("[error] `s=` option requires a number from 1 to 12")
-                quit()
+                sys.exit()
         except ValueError:
             print("[error] `s=` option requires a number from 1 to 12")
-            quit()
+            sys.exit()
     else:
         log_file = cmd
         log_override = True
@@ -389,7 +389,7 @@ Help = """{1} NAME       {0}
 
 if "-h" in sys.argv or "--help" in sys.argv:
     print(Help)
-    quit()
+    sys.exit()
 
 if Interactive:
     print(fg_magenta + "="*72)
@@ -409,7 +409,7 @@ if Interactive:
             Chart = "Agrippa"
         else:
             Chart = "Shield"
-    if Chart != "Shield" and log_override == False:
+    if Chart != "Shield" and sig_override == False:
         print("\n{}{}Please select a House to signify the question:{}".format(fg_yellow, underline, reset))
         print(" 1. The querent.")
         print(" 2. Movable wealth, personal belongings, finance.")
@@ -424,9 +424,9 @@ if Interactive:
         print("11. Friends, benefactors, luck, desired things.")
         print("12. Imprisonment, hardships, enemies, large animals.\n")
         while True:
-            sign = input("{}[1-12] {}".format(fg_greenbright, reset))
+            sign = int(input("{}[1-12] {}".format(fg_greenbright, reset)))
             try:
-                if 0 < int(sign) < 13:
+                if 0 < sign < 13:
                     significator = sign
                     break
                 else:
@@ -725,7 +725,7 @@ def msg_trp(n):
         log.write(rmessage[n] + nl)
 
 def explain_shield(n):
-    i = id_fig(FigureShield[n-1][0:4])
+    i = id_fig(FigureShield[j][0:4])
     return "{}:\n{}{}".format(OutputShield[n-1][4], s*4, FigMean[i])
 
 def l_explain_shield(n):
