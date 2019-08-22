@@ -1,6 +1,8 @@
 # geomancy.py
 Python script to generate charts used in geomancy divination method.
 
+(This program is currently being rewritten but the old program is available as `geomancy_old`.)
+
 ### Features
 * Chart analysis: automatically detects modes of perfection and way of points.
 
