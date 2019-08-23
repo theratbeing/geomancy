@@ -725,7 +725,7 @@ def msg_trp(n):
         log.write(rmessage[n] + nl)
 
 def explain_shield(n):
-    i = id_fig(FigureShield[j][0:4])
+    i = id_fig(FigureShield[n-1][0:4])
     return "{}:\n{}{}".format(OutputShield[n-1][4], s*4, FigMean[i])
 
 def l_explain_shield(n):
