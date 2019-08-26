@@ -2,94 +2,65 @@
 
 # Geomantic Figure Data
 
-import terminal
-import random
+from random import choice
+from terminal import esc_16b
 
-VIA, POP = "1111", "2222"
-LAE, TRI = "1222", "2221"
-RUB, ALB = "2122", "2212"
-PUA, PUR = "1211", "1121"
-ACQ, AMI = "2121", "1212"
-CON, CAR = "2112", "1221"
-CAP, CAU = "2111", "1112"
-MAJ, MIN = "2211", "1122"
+VIA, POP = '1111', '2222'
+LAE, TRI = '1222', '2221'
+RUB, ALB = '2122', '2212'
+PUA, PUR = '1211', '1121'
+ACQ, AMI = '2121', '1212'
+CON, CAR = '2112', '1221'
+CAP, CAU = '2111', '1112'
+MAJ, MIN = '2211', '1122'
 
 FIGURES = (VIA, POP, LAE, TRI, RUB, ALB, PUA, PUR,
            ACQ, AMI, CON, CAR, CAP, CAU, MAJ, MIN)
 
-ELF, ELA = "Fire", "Air"
-ELW, ELE = "Water", "Earth"
+ELF, ELA, ELW, ELE = '🜂 Fire', '🜁 Air', '🜄 Water', '🜃 Earth'
 
-SAT, JUP = "Saturn", "Jupiter"
-MAR, SUN = "Mars", "Sun"
-VEN, MER = "Venus", "Mercury"
-MON, NNO = "Moon", "North Node"
-SNO = "South Node"
+SAT, JUP, MAR = '♄ Saturn', '♃ Jupiter', '♂ Mars'
+SUN, VEN, MER = '☉ Sun', '♀ Venus', '☿ Mercury'
+MON, NNO, SNO = '☽ Moon', '☊ North Node', '☋ South Node'
 
-Name = {VIA:"Via", POP:"Populus", LAE:"Laetitia", TRI:"Tristitia",
-        RUB:"Rubeus", ALB:"Albus", PUA:"Puella", PUR:"Puer",
-        ACQ:"Acquisitio", AMI:"Amissio", CON:"Conjunctio", CAR:"Carcer",
-        CAP:"Caput Draconis", CAU:"Cauda Draconis", MAJ:"Fortuna Major", MIN:"Fortuna Minor"}
+ZARI, ZTAU, ZGEM = '♈ Aries', '♉ Taurus', '♊ Gemini'
+ZCAN, ZLEO, ZVIR = '♋ Cancer', '♌ Leo', '♍ Virgo'
+ZLIB, ZSCO, ZSAG = '♎ Libra', '♏ Scorpio', '♐ Sagittarius'
+ZCAP, ZAQU, ZPIS = '♑ Capricorn', '♒ Aquarius', '♓ Pisces'
 
-Meaning = {VIA:"", 
-           POP:"", 
-           LAE:"", 
-           TRI:"",
-           RUB:"", 
-           ALB:"", 
-           PUA:"", 
-           PUR:"",
-           ACQ:"", 
-           AMI:"", 
-           CON:"", 
-           CAR:"",
-           CAP:"", 
-           CAU:"", 
-           MAJ:"", 
-           MIN:""}
+Name = {VIA:'Via', POP:'Populus', LAE:'Laetitia', TRI:'Tristitia',
+        RUB:'Rubeus', ALB:'Albus', PUA:'Puella', PUR:'Puer',
+        ACQ:'Acquisitio', AMI:'Amissio', CON:'Conjunctio', CAR:'Carcer',
+        CAP:'Caput Draconis', CAU:'Cauda Draconis', MAJ:'Fortuna Major', MIN:'Fortuna Minor'}
 
-class Generator:
-    
-    def process_figures(fig_a, fig_b):
-        result = ""
-        for i in range(4):
-            if fig_a[i] == fig_b[i]: result = result + "2"
-            else: result = result + "1"
-            
-        return result
-    
-    def generate_figures():
-        result = list()
-        for i in range(4):
-            result.append(random.choice(FIGURES))
-        
-        for i in range(4):
-            result.append(result[0][i] + result[1][i] + result[2][i] + result[3][i])
-        
-        for i in range(7):
-            fi, la = i*2, i*2+1
-            result.append(Generator.process_figures(result[fi], result[la]))
-        
-        result.append(Generator.process_figures(result[0], result[14]))
-        
-        return result
+Meaning = {VIA:'', 
+           POP:'', 
+           LAE:'', 
+           TRI:'',
+           RUB:'', 
+           ALB:'', 
+           PUA:'', 
+           PUR:'',
+           ACQ:'', 
+           AMI:'', 
+           CON:'', 
+           CAR:'',
+           CAP:'', 
+           CAU:'', 
+           MAJ:'', 
+           MIN:''}
 
-class Shape:
+s, d = ' ● ', '● ●'
 
-    Horizontal = {VIA:"----", POP:"::::", LAE:"-:::", TRI:":::-",
-                  RUB:":-::", ALB:"::-:", PUA:"-:--", PUR:"--:-",
-                  ACQ:":-:-", AMI:"-:-:", CON:":--:", CAR:"-::-",
-                  CAP:":---", CAU:"---:", MAJ:"::--", MIN:"--::"}
-
-    s, d = " x ", "x x"
-
-    Vertical = {VIA:[s, s, s, s], POP:[d, d, d, d], LAE:[s, d, d, d], TRI:[d, d, d, s],
-                RUB:[d, s, d, d], ALB:[d, d, s, d], PUA:[s, d, s, s], PUR:[s, s, d, s],
-                ACQ:[d, s, d, s], AMI:[s, d, s, d], CON:[d, s, s, d], CAR:[s, d, d, s],
-                CAP:[d, s, s, s], CAU:[s, s, s, d], MAJ:[d, d, s, s], MIN:[s, s, d, d]}
+Shape = {VIA:[s, s, s, s], POP:[d, d, d, d], LAE:[s, d, d, d], TRI:[d, d, d, s],
+         RUB:[d, s, d, d], ALB:[d, d, s, d], PUA:[s, d, s, s], PUR:[s, s, d, s],
+         ACQ:[d, s, d, s], AMI:[s, d, s, d], CON:[d, s, s, d], CAR:[s, d, d, s],
+         CAP:[d, s, s, s], CAU:[s, s, s, d], MAJ:[d, d, s, s], MIN:[s, s, d, d]}
 
 class Virtue:
-
+    
+    'Elemental attribution have Rubeus and Laetitia switched. Zodiacal system is from Gerard of Cremona.'
+    
     Element = {VIA:ELW, POP:ELW, LAE:ELF, TRI:ELE,
                RUB:ELA, ALB:ELW, PUA:ELW, PUR:ELA,
                ACQ:ELA, AMI:ELF, CON:ELA, CAR:ELE,
@@ -99,66 +70,88 @@ class Virtue:
               RUB:MAR, ALB:MER, PUA:VEN, PUR:MAR,
               ACQ:JUP, AMI:VEN, CON:MER, CAR:SAT,
               CAP:NNO, CAU:SNO, MAJ:SUN, MIN:SUN}
+    
+    Zodiac = {VIA:ZLEO, POP:ZCAP, LAE:ZTAU, TRI:ZSCO,
+              RUB:ZGEM, ALB:ZCAN, PUA:ZLIB, PUR:ZGEM,
+              ACQ:ZARI, AMI:ZSCO, CON:ZVIR, CAR:ZPIS,
+              CAP:ZVIR, CAU:ZSAG, MAJ:ZAQU, MIN:ZTAU}
 
-class ColorAssignment:
+class Color:
     
-    Element = {ELF:"red", ELA:"yellow", ELW:"blue", ELE:"green"}
+    'Color correspondences (Golden Dawn Queen Scale) in ANSI 256 color mode. See terminal.py for the full palette'
     
-    Planet = {SAT:"light_black", JUP:"blue", MAR:"red",
-              SUN:"yellow", VEN:"green", MER:"cyan",
-              MON:"magenta", NNO:"white", SNO:"white"}
+    WHI_N, WHI_B, WHI_D = esc_16b(7), esc_16b(15), esc_16b(250)
+    BLA_N, BLA_B, BLA_D = esc_16b(0), esc_16b(8), esc_16b(232)
+    RED_N, RED_B, RED_D = esc_16b(1), esc_16b(9), esc_16b(52)
+    YEL_N, YEL_B, YEL_D = esc_16b(3), esc_16b(11), esc_16b(220)
+    BLU_N, BLU_B, BLU_D = esc_16b(4), esc_16b(12), esc_16b(17)
+    ORA_N, ORA_B, ORA_D = esc_16b(202), esc_16b(208), esc_16b(130)
+    GRN_N, GRN_B, GRN_D = esc_16b(2), esc_16b(10), esc_16b(22)
+    PUR_N, PUR_B, PUR_D = esc_16b(128), esc_16b(200), esc_16b(56)
     
-    All = {**Element, **Planet}
+    Element = {ELF:RED_N, ELA:YEL_N, ELW:BLU_N, ELE:GRN_N}
+    
+    Planet = {SAT:BLA_B, JUP:BLU_B, MAR:RED_B,
+              SUN:YEL_B, VEN:GRN_B, MER:ORA_B,
+              MON:PUR_B, NNO:WHI_N, SNO:WHI_N}
+    
+    Zodiac = {ZARI:RED_N, ZLEO:RED_N, ZSAG:RED_N,
+              ZLIB:YEL_N, ZAQU:YEL_N, ZGEM:YEL_N,
+              ZCAN:BLU_N, ZSCO:BLU_N, ZPIS:BLU_N,
+              ZCAP:GRN_N, ZTAU:GRN_N, ZVIR:GRN_N}
+    
+class Figure(object):
+    
+    def __init__(self, number):
+        self.number = number
+        self.name = Name[number]
+        self.meaning = Meaning[number]
+        self.shape = Shape[number]
+        self.element = Virtue.Element[number]
+        self.planet = Virtue.Planet[number]
+        self.zodiac = Virtue.Zodiac[number]
+        self.color = {'e':Color.Element[self.element], 'p':Color.Planet[self.planet], 'z':Color.Zodiac[self.zodiac]}
 
-class ColorTable:
-    
-    def make_table(mode):
-        
-        if mode == "e": source = Virtue.Element
-        else: source = Virtue.Planet
-        
-        output = dict()
-        for code in source:
-            value = source[code]
-            output[code] = ColorAssignment.All[value]
-        
-        return output
-    
-    Element = make_table("e")
-    Planet = make_table("p")
+def link_figures(iterable):
+    result = list()
+    for item in iterable:
+        result.append(Figure(item))
+    return result
 
-class Output:
+def process_figures(fig_a, fig_b):
+    result = ''
+    for i in range(4):
+        if fig_a[i] is fig_b[i]: result = result + '2'
+        else: result = result + '1'
+    return result
     
-    def make_color(source, mode):
-        
-        if mode == "e": table = ColorTable.Element
-        else: table = ColorTable.Planet
-        
-        output = dict()
-        for code in source:
-            text = terminal.ANSI.color(source[code], fg=table[code])
-            output[code] = text
-        
-        return output
+def generate_figures():
+    result = list()
+    for i in range(4):
+        result.append(choice(FIGURES))
     
-    def make_vertical_color(source, mode):
-        
-        if mode == "e": table = ColorTable.Element
-        else: table = ColorTable.Planet
-        
-        output = dict()
-        for code in source:
-            content = list()
-            for line in source[code]:
-                text = terminal.ANSI.color(line, fg=table[code])
-                content.append(text)
-            output[code] = content
-        
-        return output
+    for i in range(4):
+        result.append(result[0][i] + result[1][i] + result[2][i] + result[3][i])
     
-    NameElement = make_color(Name, "e")
-    NamePlanet = make_color(Name, "p")
-    HorizontalElement = make_color(Shape.Horizontal, "e")
-    HorizontalPlanet = make_color(Shape.Horizontal, "p")
-    VerticalElement = make_vertical_color(Shape.Vertical, "e")
-    VerticalPlanet = make_vertical_color(Shape.Vertical, "p")
+    for i in range(7):
+        fi, la = i*2, i*2+1
+        result.append(process_figures(result[fi], result[la]))
+
+    result.append(process_figures(result[0], result[14]))
+    
+    return result
+    
+def generate_complete_figures():
+    numbers = generate_figures()
+    result = list()
+    for n in numbers:
+        result.append(Figure(n))
+    return result
+
+if __name__ == '__main__':
+    
+    test = generate_figures()
+    
+    for f in test:
+        print(f.name)
+

@@ -2,39 +2,111 @@
 
 # Module for terminal display
 
-class ANSI:
+import os
+
+width, height = os.get_terminal_size()
+
+Reset = '\u001b[0m'
+
+Style = {'reset':'\u001b[0m',
+         'bold':'\u001b[1m',
+         'dim':'\u001b[2m',
+         'italic':'\u001b[3m',
+         'underline':'\u001b[4m',
+         'blink':'\u001b[5m',
+         'reverse':'\u001b[7m',
+         'conceal':'\u001b[8m',
+         'strike':'\u001b[9m',
+         'overline':'\u001b[53m',
+         'none':''}
+
+Fore = {'black':'\u001b[30m', 'bright_black':'\u001b[90m',
+        'red':'\u001b[31m', 'bright_red':'\u001b[91m',
+        'green':'\u001b[32m', 'bright_green':'\u001b[92m',
+        'yellow':'\u001b[33m', 'bright_yellow':'\u001b[93m',
+        'blue':'\u001b[34m', 'bright_blue':'\u001b[94m',
+        'magenta':'\u001b[35m', 'bright_magenta':'\u001b[95m',
+        'cyan':'\u001b[36m', 'bright_cyan':'\u001b[96m',
+        'white':'\u001b[37m', 'bright_white':'\u001b[97m',
+        'none':''}
+
+Back = {'black':'\u001b[40m', 'bright_black':'\u001b[100m',
+        'red':'\u001b[41m', 'bright_red':'\u001b[101m',
+        'green':'\u001b[42m', 'bright_green':'\u001b[102m',
+        'yellow':'\u001b[43m', 'bright_yellow':'\u001b[103m',
+        'blue':'\u001b[44m', 'bright_blue':'\u001b[104m',
+        'magenta':'\u001b[45m', 'bright_magenta':'\u001b[105m',
+        'cyan':'\u001b[46m', 'bright_cyan':'\u001b[106m',
+        'white':'\u001b[47m', 'bright_white':'\u001b[107m',
+        'none':''}
+
+def make_256_table():
+    start = (16, 52, 88, 124, 160, 196,
+             34, 70, 106, 142, 178, 214)
     
-    reset = "\u001b[0m"
+    for i in range(8):
+        print(f'\u001b[38;5;{i}m{i:>3} ', end='')
+    print('')
     
-    Style = {"bold":"\u001b[1m",
-             "underline":"\u001b[4m",
-             "reverse":"\u001b[7m",
-             "none":""}
+    for i in range(8, 16):
+        print(f'\u001b[38;5;{i}m{i:>3} ', end='')
+    print('\n')
     
-    Front = {"black":"\u001b[30m", "light_black":"\u001b[30;1m",
-             "red":"\u001b[31m", "light_red":"\u001b[31;1m",
-             "green":"\u001b[32m", "light_green":"\u001b[32;1m",
-             "yellow":"\u001b[33m", "light_yellow":"\u001b[33;1m",
-             "blue":"\u001b[34m", "light_blue":"\u001b[34;1m",
-             "magenta":"\u001b[35m", "light_magenta":"\u001b[35;1m",
-             "cyan":"\u001b[36m", "light_cyan":"\u001b[36;1m",
-             "white":"\u001b[37m", "light_white":"\u001b[37;1m",
-             "none":""}
+    for row in start:
+        if row == 34: print('')
+        for i in range(18):
+            print(f'\u001b[38;5;{row+i}m{row+i:>3} ', end='')
+        print('')
     
-    Back = {"black":"\u001b[40m", "light_black":"\u001b[40;1m",
-             "red":"\u001b[41m", "light_red":"\u001b[41;1m",
-             "green":"\u001b[42m", "light_green":"\u001b[42;1m",
-             "yellow":"\u001b[43m", "light_yellow":"\u001b[43;1m",
-             "blue":"\u001b[44m", "light_blue":"\u001b[44;1m",
-             "magenta":"\u001b[45m", "light_magenta":"\u001b[45;1m",
-             "cyan":"\u001b[46m", "light_cyan":"\u001b[46;1m",
-             "white":"\u001b[47m", "light_white":"\u001b[47;1m",
-             "none":""}
+    print('')
+    for i in range(232, 244):
+        print(f'\u001b[38;5;{i}m{i:>3} ', end='')
+    print('')
+    for i in range(244, 256):
+        print(f'\u001b[38;5;{i}m{i:>3} ', end='')
+    print(Reset)
+
+def color_palette():
     
-    def color(text, fg="none", bg="none", st="none"):
-        return ANSI.Front[fg] + ANSI.Back[bg] + ANSI.Style[st] + text + ANSI.reset
+    print('Decorations')
+    for name in Style:
+        print(f'{Style[name]}{name}{Reset} ', end='')
     
-    def color_ext(text, fg=7, bg=0, st="none"):
-        esc_fg = "\u001b[38;5;{};m".format(str(fg))
-        esc_bg = "\u001b[48;5;{};m".format(str(bg))
-        return esc_fg + esc_bg + ANSI.Style[st] + text + ANSI.reset
+    print('\n\nStandard Colors')
+    for name in Fore:
+        print(f'{Fore[name]}{name} {Reset}', end='')
+    print('\n')
+    
+    for name in Back:
+        print(f'{Back[name]} {name} {Reset}', end='')
+    print('')
+    
+    print('\n16-bit Colors')
+    make_256_table()
+    print(Style['reverse'])
+    make_256_table()
+
+def color_8b(text, fg='none', bg='none', st='none'):
+    return Fore[fg] + Back[bg] + Style[st] + text + Reset
+
+def color_16b(text, fg=255, bg=232, st='none'):
+    foreground = f'\u001b[38;5;{fg}m'
+    background = f'\u001b[48;5;{bg}m'
+    return foreground + background + Style[st] + text + Reset
+
+def color_24b(text, fg=(255, 255, 255), bg=(0, 0, 0), st='none'):
+    foreground = f'\u001b[38;2;{fg[0]};{fg[1]};{fg[2]}m'
+    background = f'\u001b[48;2;{bg[0]};{bg[1]};{bg[2]}m'
+    return foreground + background + Style[st] + text + Reset
+
+def esc_16b(number, mode='f'):
+    if mode == 'f':
+        return f'\u001b[38;5;{number}m'
+    elif mode == 'b':
+        return f'\u001b[48;5;{number}m'
+    elif mode == 'x':
+        return f'\u001b[{number}m'
+    else: raise ValueError('`mode` must be set to either `f`, `b`, or `x`!')
+
+if __name__ == '__main__':
+    color_palette()
