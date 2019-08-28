@@ -23,12 +23,12 @@ class ShieldChart(object):
         self.Judge = self.CompleteFigures[14]
         self.Rc = self.CompleteFigures[15]
 
-    def draw(self, cl='e'):
+    def draw(self, cl='element'):
         
-        print(f'┏{"━━━━━┯"*7}{"━"*5}┓ ╭{"─"*37}╮')
+        print(f'┏{"━━━━━┯"*7}{"━"*5}┓╭{"─"*37}╮')
         
         print(f'┃{8:^5}│{7:^5}│{6:^5}│{5:^5}│{4:^5}│{3:^5}│{2:^5}│{1:^5}┃'\
-            f' │{"Mothers":^37}│')
+            f'│{"Mothers":^37}│')
         for i in range(4):
             print(f'┃{self.D4.color[cl]}{self.D4.shape[i]:^5}{Reset}'\
                 f'│{self.D3.color[cl]}{self.D3.shape[i]:^5}{Reset}'\
@@ -39,10 +39,10 @@ class ShieldChart(object):
                 f'│{self.M2.color[cl]}{self.M2.shape[i]:^5}{Reset}'\
                 f'│{self.M1.color[cl]}{self.M1.shape[i]:^5}{Reset}┃', end='')
             cur_fig = self.CompleteFigures[i]
-            print(f' │ {i+1:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {i+1:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
         
-        print(f'┠{"─────┴─────┼"*3}{"─"*5}┴{"─"*5}┨ │{" "*37}│')
-        print(f'┃{12:^11}│{11:^11}│{10:^11}│{9:^11}┃ │{"Daughters":^37}│')
+        print(f'┠{"─────┴─────┼"*3}{"─"*5}┴{"─"*5}┨│{" "*37}│')
+        print(f'┃{12:^11}│{11:^11}│{10:^11}│{9:^11}┃│{"Daughters":^37}│')
         
         for i in range(4):
             print(f'┃{self.N4.color[cl]}{self.N4.shape[i]:^11}{Reset}'\
@@ -50,27 +50,27 @@ class ShieldChart(object):
                 f'│{self.N2.color[cl]}{self.N2.shape[i]:^11}{Reset}'\
                 f'│{self.N1.color[cl]}{self.N1.shape[i]:^11}{Reset}┃', end ='')
             cur_fig = self.CompleteFigures[i+4]
-            print(f' │ {i+5:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {i+5:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
         
-        print(f'┠{"─"*11}┴{"─"*11}┼{"─"*11}┴{"─"*11}┨ │{" "*37}│')
-        print(f'┃{"LW":^23}│{"RW":^23}┃ │{"Nieces":^37}│')
+        print(f'┠{"─"*11}┴{"─"*11}┼{"─"*11}┴{"─"*11}┨│{" "*37}│')
+        print(f'┃{"LW":^23}│{"RW":^23}┃│{"Nieces":^37}│')
         
         for i in range(4):
             print(f'┃{self.WL.color[cl]}{self.WL.shape[i]:^23}{Reset}'\
                 f'│{self.WR.color[cl]}{self.WR.shape[i]:^23}{Reset}┃', end='')
             cur_fig = self.CompleteFigures[i+8]
-            print(f' │ {i+9:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {i+9:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
         
-        print(f'┠{"─"*23}┴{"─"*17}┬{"─"*5}┨ │{" "*37}│')
-        print(f'┃{"Ju":>24}{" "*17}│{"Rc":^5}┃ │{"Court":^37}│')
+        print(f'┠{"─"*23}┴{"─"*17}┬{"─"*5}┨│{" "*37}│')
+        print(f'┃{"Ju":>24}{" "*17}│{"Rc":^5}┃│{"Court":^37}│')
         
         for i in range(4):
             print(f'┃{self.Judge.color[cl]}{self.Judge.shape[i]:>25}{Reset}{" "*16}'\
                 f'│{self.Rc.color[cl]}{self.Rc.shape[i]:^5}{Reset}┃', end='')
             cur_fig = self.CompleteFigures[i+12]
-            print(f' │ {court[i]:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {court[i]:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
         
-        print(f'┗{"━"*41}┷{"━"*5}┛ ╰{"─"*37}╯')
+        print(f'┗{"━"*41}┷{"━"*5}┛╰{"─"*37}╯')
 
 class HouseChart(object):
     
@@ -102,7 +102,7 @@ class HouseChart(object):
         self.Judge = self.CompleteFigures[14]
         self.Rc = self.CompleteFigures[15]
     
-    def draw(self, cl='p'):
+    def draw(self, cl='planet'):
         
         print(f'┏{"━━━━━━━┯"*4}{"━"*7}┓ ╭{"─"*37}╮')
         print(f'┃{" "*7}│{"11":^7}│{"10":^7}│{"9":^7}│{" "*7}┃ │{" "*37}│')
