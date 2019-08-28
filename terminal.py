@@ -2,10 +2,6 @@
 
 # Module for terminal display
 
-import os
-
-width, height = os.get_terminal_size()
-
 Reset = '\u001b[0m'
 
 Style = {'reset':'\u001b[0m',
