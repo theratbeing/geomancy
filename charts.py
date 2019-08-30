@@ -21,18 +21,93 @@ class ShieldChart(object):
         self.N1, self.N2, self.N3, self.N4 = self.CompleteFigures[8:12]
         self.WR = self.CompleteFigures[12]
         self.WL = self.CompleteFigures[13]
-        self.Judge = self.CompleteFigures[14]
-        self.Rc = self.CompleteFigures[15]
+        self.JU = self.CompleteFigures[14]
+        self.RC = self.CompleteFigures[15]
+        
+        # Via Puncti
+        self.VP_SCORE = 0
+        self.VP_TABLE = list()
+        for i in range(15): self.VP_TABLE.append(False)
+        
+        # Right witness score +1
+        if self.JU.number[0] == self.WR.number[0]:
+            self.VP_SCORE += 1
+            self.VP_TABLE[0] = True
+            
+            # Niece 1 score +3
+            if self.JU.number[0] == self.N1.number[0]:
+                self.VP_SCORE += 3
+                self.VP_TABLE[2] = True
+                
+                # Mother 1
+                if self.JU.number[0] == self.M1.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[6] = True
+                
+                # Mother 2
+                if self.JU.number[0] == self.M2.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[7] = True
+            
+            # Niece 2 score +3
+            if self.JU.number[0] == self.N2.number[0]:
+                self.VP_SCORE += 3
+                self.VP_TABLE[3] = True
+                
+                # Mother 3
+                if self.JU.number[0] == self.M3.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[8] = True
+                
+                # Mother 4
+                if self.JU.number[0] == self.M4.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[9] = True
+        
+        # Left witness
+        if self.JU.number[0] == self.WL.number[0]:
+            self.VP_SCORE += 1
+            self.VP_TABLE[1] = True
+            
+            # Niece 3
+            if self.JU.number[0] == self.N3.number[0]:
+                self.VP_SCORE += 3
+                self.VP_TABLE[4] = True
+                
+                # Daughter 1
+                if self.JU.number[0] == self.D1.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[10] = True
+                
+                # Daughter 2
+                if self.JU.number[0] == self.D2.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[11] = True
+            
+            # Niece 4
+            if self.JU.number[0] == self.N4.number[0]:
+                self.VP_SCORE += 3
+                self.VP_TABLE[5] = True
+                
+                # Daughter 3
+                if self.JU.number[0] == self.D3.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[12] = True
+                
+                # Daughter 4
+                if self.JU.number[0] == self.D4.number[0]:
+                    self.VP_SCORE += 15
+                    self.VP_TABLE[13] = True
+
 
     def draw(self, cl='element'):
         'Draw a shield chart on the screen'
         
         # Left Window and Right Window printed in parallel
-        print(f'┏{"━━━━━┯"*7}{"━"*5}┓╭{"─"*37}╮')
+        print(f'┏{"━━━━━┯"*7}{"━"*5}┓╭{"─"*29}╮')
         
         # First row: LW - Mothers and Daughters
-        print(f'┃{8:^5}│{7:^5}│{6:^5}│{5:^5}│{4:^5}│{3:^5}│{2:^5}│{1:^5}┃'\
-            f'│{"Mothers":^37}│')
+        print(f'┃{8:^5}│{7:^5}│{6:^5}│{5:^5}│{4:^5}│{3:^5}│{2:^5}│{1:^5}┃│{"Mothers":^29}│')
         for i in range(4):
             print(f'┃{self.D4.color[cl]}{self.D4.shape[i]:^5}{Reset}'\
                 f'│{self.D3.color[cl]}{self.D3.shape[i]:^5}{Reset}'\
@@ -45,11 +120,11 @@ class ShieldChart(object):
             
             # RW - name and virtues of mothers
             cur_fig = self.CompleteFigures[i]
-            print(f'│ {i+1:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
-        print(f'┠{"─────┴─────┼"*3}{"─"*5}┴{"─"*5}┨│{" "*37}│')
+            print(f'│ {i+1:>2} {cur_fig.color[cl]}{cur_fig.name:<18}{cur_fig.syms}{Reset} │')
+        print(f'┠{"─────┴─────┼"*3}{"─"*5}┴{"─"*5}┨│{" "*29}│')
         
         # Second row: LW Nieces
-        print(f'┃{12:^11}│{11:^11}│{10:^11}│{9:^11}┃│{"Daughters":^37}│')
+        print(f'┃{12:^11}│{11:^11}│{10:^11}│{9:^11}┃│{"Daughters":^29}│')
         
         for i in range(4):
             print(f'┃{self.N4.color[cl]}{self.N4.shape[i]:^11}{Reset}'\
@@ -59,12 +134,12 @@ class ShieldChart(object):
             
             # RW daughters
             cur_fig = self.CompleteFigures[i+4]
-            print(f'│ {i+5:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {i+5:>2} {cur_fig.color[cl]}{cur_fig.name:<18}{cur_fig.syms}{Reset} │')
         
-        print(f'┠{"─"*11}┴{"─"*11}┼{"─"*11}┴{"─"*11}┨│{" "*37}│')
+        print(f'┠{"─"*11}┴{"─"*11}┼{"─"*11}┴{"─"*11}┨│{" "*29}│')
         
         # Third row: LW witness
-        print(f'┃{"LW":^23}│{"RW":^23}┃│{"Nieces":^37}│')
+        print(f'┃{"LW":^23}│{"RW":^23}┃│{"Nieces":^29}│')
         
         for i in range(4):
             print(f'┃{self.WL.color[cl]}{self.WL.shape[i]:^23}{Reset}'\
@@ -72,27 +147,109 @@ class ShieldChart(object):
             
             # RW nieces
             cur_fig = self.CompleteFigures[i+8]
-            print(f'│ {i+9:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {i+9:>2} {cur_fig.color[cl]}{cur_fig.name:<18}{cur_fig.syms}{Reset} │')
         
-        print(f'┠{"─"*23}┴{"─"*17}┬{"─"*5}┨│{" "*37}│')
+        print(f'┠{"─"*23}┴{"─"*17}┬{"─"*5}┨│{" "*29}│')
         
         # Fourth row: LW judge & reconciler
-        print(f'┃{"Ju":>24}{" "*17}│{"Rc":^5}┃│{"Court":^37}│')
+        print(f'┃{"Ju":>24}{" "*17}│{"Rc":^5}┃│{"Court":^29}│')
         
         for i in range(4):
-            print(f'┃{self.Judge.color[cl]}{self.Judge.shape[i]:>25}{Reset}{" "*16}'\
-                f'│{self.Rc.color[cl]}{self.Rc.shape[i]:^5}{Reset}┃', end='')
+            print(f'┃{self.JU.color[cl]}{self.JU.shape[i]:>25}{Reset}{" "*16}'\
+                f'│{self.RC.color[cl]}{self.RC.shape[i]:^5}{Reset}┃', end='')
             
             # RW court figures
             cur_fig = self.CompleteFigures[i+12]
-            print(f'│ {court[i]:>2} {cur_fig.color[cl]}{cur_fig.name:<16}{cur_fig.symbols}{Reset} │')
+            print(f'│ {court[i]:>2} {cur_fig.color[cl]}{cur_fig.name:<18}{cur_fig.syms}{Reset} │')
         
-        print(f'┗{"━"*41}┷{"━"*5}┛╰{"─"*37}╯')
+        print(f'┗{"━"*41}┷{"━"*5}┛╰{"─"*29}╯')
+        
+        # Bottom panel for Via Puncti
+        print(f'╭{"─"*78}╮')
+        print(f'│{"Way of the Points":^78}│')
+        
+        col_1 = [f'│{Fore["black"]} {"Right W.":<14}{Reset}', f'│{" "*15}',
+                 f'│{Fore["black"]} {"Left W.":<14}{Reset}', f'│{" "*15}']
+        
+        if self.VP_TABLE[0]: col_1[0] = '│ Right Witness '
+        if self.VP_TABLE[1]: col_1[2] = '│ Left Witness  '
+        
+        col_2 = [f'{Fore["black"]}  9{Reset} ',
+                 f'{Fore["black"]} 10{Reset} ',
+                 f'{Fore["black"]} 11{Reset} ',
+                 f'{Fore["black"]} 12{Reset} ']
+        
+        if self.VP_TABLE[2]: col_2[0] = f'{Fore["bright_red"]}  9{Reset} '
+        if self.VP_TABLE[3]: col_2[1] = f'{Fore["bright_yellow"]} 10{Reset} '
+        if self.VP_TABLE[4]: col_2[2] = f'{Fore["bright_blue"]} 11{Reset} '
+        if self.VP_TABLE[5]: col_2[3] = f'{Fore["bright_green"]} 12{Reset} '
+        
+        col_3 = [f'{Fore["black"]}  2{Reset} ',
+                 f'{Fore["black"]}  4{Reset} ',
+                 f'{Fore["black"]}  6{Reset} ',
+                 f'{Fore["black"]}  8{Reset} ']
+        
+        if self.VP_TABLE[7]: col_3[0] = f'{Fore["bright_red"]}  2{Reset} '
+        if self.VP_TABLE[9]: col_3[1] = f'{Fore["bright_yellow"]}  4{Reset} '
+        if self.VP_TABLE[11]: col_3[2] = f'{Fore["bright_blue"]}  6{Reset} '
+        if self.VP_TABLE[13]: col_3[3] = f'{Fore["bright_green"]}  8{Reset} '
+        
+        col_4 = [f'{Fore["black"]}  1{Reset} ',
+                 f'{Fore["black"]}  3{Reset} ',
+                 f'{Fore["black"]}  5{Reset} ',
+                 f'{Fore["black"]}  7{Reset} ']
+        
+        if self.VP_TABLE[6]: col_4[0] = f'{Fore["bright_red"]}  1{Reset} '
+        if self.VP_TABLE[8]: col_4[1] = f'{Fore["bright_yellow"]}  3{Reset} '
+        if self.VP_TABLE[10]: col_4[2] = f'{Fore["bright_blue"]}  5{Reset} '
+        if self.VP_TABLE[12]: col_4[3] = f'{Fore["bright_green"]}  7{Reset} '
+        
+        col_5 = [f'{Fore["black"]} 1st Trip.{Reset}{" "*41}│',
+                 f'{Fore["black"]} 2nd Trip.{Reset}{" "*41}│',
+                 f'{Fore["black"]} 3rd Trip.{Reset}{" "*41}│',
+                 f'{Fore["black"]} 4th Trip.{Reset}{" "*41}│']
+        
+        # If via puncti reaches the end of chart
+        if self.VP_TABLE[6] or self.VP_TABLE[7]: col_5[0] = f'{Fore["bright_red"]} 1st Triplicity:{Reset} {"personality and habits":<34}│'
+        if self.VP_TABLE[8] or self.VP_TABLE[9]: col_5[1] = f'{Fore["bright_yellow"]} 2nd Triplicity:{Reset} {"events and influences":<34}│'
+        if self.VP_TABLE[10] or self.VP_TABLE[11]: col_5[2] = f'{Fore["bright_blue"]} 3rd Triplicity:{Reset} {"frequently visited places":<34}│'
+        if self.VP_TABLE[12] or self.VP_TABLE[13]: col_5[3] = f'{Fore["bright_green"]} 4th Triplicity:{Reset} {"other people":<34}│'
+        
+        # If stops at niece
+        if self.VP_TABLE[2] and (self.VP_SCORE < 15): col_5[0] = f'{Fore["bright_red"]} 1st Triplicity:{Reset} {"personality and habits":<34}│'
+        if self.VP_TABLE[3] and (self.VP_SCORE < 15): col_5[1] = f'{Fore["bright_yellow"]} 2nd Triplicity:{Reset} {"events and influences":<34}│'
+        if self.VP_TABLE[4] and (self.VP_SCORE < 15): col_5[2] = f'{Fore["bright_blue"]} 3rd Triplicity:{Reset} {"frequently visited places":<34}│'
+        if self.VP_TABLE[5] and (self.VP_SCORE < 15): col_5[3] = f'{Fore["bright_green"]} 4th Triplicity:{Reset} {"other people":<34}│'
+        
+        # Merge the collumns
+        for i in range(4): print(col_1[i] + col_2[i] + col_3[i] + col_4[i] + col_5[i])
+        print(f'╰{"─"*78}╯')
+        # End of function
+    
+    def generate_log_string(end='\n'):
+        'Generate a string to be written into a plain text file'
+        
+        output = ''
+        template = [f'Chart type : Shield chart',
+                    f'-------------------------',
+                    f'1st Mother : {self.M1.number} {self.M1.name:<17} 1st Niece  : {self.N1.number} {self.N1.name}',
+                    f'2nd Mother : {self.M2.number} {self.M2.name:<17} 2nd Niece  : {self.N2.number} {self.N2.name}',
+                    f'3rd Mother : {self.M3.number} {self.M3.name:<17} 3rd Niece  : {self.N3.number} {self.N3.name}',
+                    f'4th Mother : {self.M4.number} {self.M4.name:<17} 4th Niece  : {self.N4.number} {self.N4.name}',
+                    f'1st Daught.: {self.D1.number} {self.D1.name:<17} R. Witness : {self.WR.number} {self.WR.name}',
+                    f'2nd Daught.: {self.D2.number} {self.D2.name:<17} L. Witness : {self.WL.number} {self.WL.name}',
+                    f'3rd Daught.: {self.D3.number} {self.D3.name:<17} Judge      : {self.JU.number} {self.JU.name}',
+                    f'4th Daught.: {self.D4.number} {self.D4.name:<17} Reconciler : {self.RC.number} {self.RC.name}']
+        
+        for line in template: output += line + end
+        return output
+
 
 class HouseChart(object):
     
     def arrange_agrippa(self, numbers):
         # We will use the Wheel to check for modes of perfection
+        self.Mode = 'Agrippa'
         self.Wheel = list()
         self.Wheel[0] = numbers[0]
         self.Wheel[9] = numbers[1]
@@ -117,7 +274,7 @@ class HouseChart(object):
         '''
         
         # Select the house arrangement system.
-        if mode == 'normal': self.Wheel = numbers[0:12]
+        if mode == 'normal': self.Mode, self.Wheel = 'normal', numbers[0:12]
         else: arrange_agrippa(numbers)
         
         # Make Figure object from number list.
@@ -128,8 +285,8 @@ class HouseChart(object):
         self.H10, self.H11, self.H12 = self.CompleteFigures[9:12]
         self.WR = self.CompleteFigures[12]
         self.WL = self.CompleteFigures[13]
-        self.Judge = self.CompleteFigures[14]
-        self.Rc = self.CompleteFigures[15]
+        self.JU = self.CompleteFigures[14]
+        self.RC = self.CompleteFigures[15]
     
         # Querent and Quesited are strings from Wheel
         self.Querent, self.QuerentPos = self.Wheel[qr], qr
@@ -266,7 +423,7 @@ class HouseChart(object):
         window_l.append(f'┃{"1":^7}│{"Judge":^23}│{"7":^7}┃')
         for i in range(4):
             window_l.append(f'┃{self.H01.color[cl]}{self.H01.shape[i]:^7}{Reset}│'\
-                f'{self.Judge.color[cl]}{self.Judge.shape[i]:^23}{Reset}'\
+                f'{self.JU.color[cl]}{self.JU.shape[i]:^23}{Reset}'\
                 f'│{self.H07.color[cl]}{self.H07.shape[i]:^7}{Reset}┃')
         window_l.append(f'┠{"─"*7}┤{" "*23}├{"─"*7}┨')
         
@@ -274,7 +431,7 @@ class HouseChart(object):
         window_l.append(f'┃{"2":^7}│{"Reconciler":^23}│{"6":^7}┃')
         for i in range(4):
             window_l.append(f'┃{self.H02.color[cl]}{self.H02.shape[i]:^7}{Reset}│'\
-                f'{self.Rc.color[cl]}{self.Rc.shape[i]:^23}{Reset}'\
+                f'{self.RC.color[cl]}{self.RC.shape[i]:^23}{Reset}'\
                 f'│{self.H06.color[cl]}{self.H06.shape[i]:^7}{Reset}┃')
         window_l.append(f'┠{"─"*7}┼{"─"*7}┬{"─"*7}┬{"─"*7}┼{"─"*7}┨')
         
@@ -313,16 +470,16 @@ class HouseChart(object):
         
         
         if self.OCCUPATION: window_r.append(f' │{Fore["bright_green"]}{"✓ Occupation":<37}{Reset}│')
-        else: window_r.append(f' │{Fore["bright_black"]}{"  Occupation":<37}{Reset}│')
+        else: window_r.append(f' │{Fore["black"]}{"  Occupation":<37}{Reset}│')
         
         if self.CONJUNCTION: window_r.append(f' │{Fore["bright_green"]}✓ Conjunction from {self.CONJUNCTION_SOURCE:<18}{Reset}│')
-        else: window_r.append(f' │{Fore["bright_black"]}{"  Conjunction":<37}{Reset}│')
+        else: window_r.append(f' │{Fore["black"]}{"  Conjunction":<37}{Reset}│')
         
         if self.MUTATION: window_r.append(f' │{Fore["bright_green"]}✓ Mutation in house {self.MUTATION_POS:<17}{Reset}│')
-        else: window_r.append(f' │{Fore["bright_black"]}{"  Mutation":<37}{Reset}│')
+        else: window_r.append(f' │{Fore["black"]}{"  Mutation":<37}{Reset}│')
         
         if self.TRANSLATION: window_r.append(f' │{Fore["bright_green"]}✓ Translation in houses {self.TRANSLATION_POS:<13}{Reset}│')
-        else: window_r.append(f' │{Fore["bright_black"]}{"  Translation":<37}{Reset}│')
+        else: window_r.append(f' │{Fore["black"]}{"  Translation":<37}{Reset}│')
         
         if self.PERFECTION > 0: window_r.append(f' │{Fore["bright_blue"]}{"✓ This chart perfects":<37}{Reset}│')
         else: window_r.append(f' │{Fore["red"]}{"  No perfection found":<37}{Reset}│')
@@ -337,3 +494,33 @@ class HouseChart(object):
         # Print the result
         for line in output:
             print(line)
+    
+    def generate_log_string(end='\n'):
+        'Generates a string to be written into plain text file'
+        
+        output = ''
+        template = [f'Chart type: House chart/{self.Mode}',
+                    f'-------------------------------',
+                    f'House  1: {self.H01.number} {self.H01.name:<17} R. Witness: {self.WR.number} {self.WR.name}',
+                    f'House  2: {self.H02.number} {self.H02.name:<17} L. Witness: {self.WL.number} {self.WL.name}',
+                    f'House  3: {self.H03.number} {self.H03.name:<17} Judge     : {self.JU.number} {self.JU.name}',
+                    f'House  4: {self.H04.number} {self.H04.name:<17} Reconciler: {self.RC.number} {self.RC.name}',
+                    f'House  5: {self.H05.number} {self.H05.name}',
+                    f'House  6: {self.H06.number} {self.H06.name:<17} Querent in house {self.QuerentPos+1}',
+                    f'House  7: {self.H07.number} {self.H07.name:<17} Quesited in house {self.QuesitedPos+1}',
+                    f'House  8: {self.H08.number} {self.H08.name}',
+                    f'House  9: {self.H09.number} {self.H09.name}',
+                    f'House 10: {self.H10.number} {self.H10.name}',
+                    f'House 11: {self.H11.number} {self.H11.name}',
+                    f'House 12: {self.H12.number} {self.H12.name}',
+                    ' ',
+                    f'Modes of Perfection:']
+        
+        if self.PERFECTION == 0: template.append('None')
+        if self.OCCUPATION: template.append('Translation')
+        if self.CONJUNCTION: template.append('Conjunction')
+        if self.MUTATION: template.append(f'Mutation in house {self.MUTATION_POS}')
+        if self.TRANSLATION: template.append(f'Translation in houses {self.TRANSLATION_POS}')
+        
+        for line in template: output += line + end
+        return output
