@@ -4,6 +4,7 @@
 
 from time import strftime
 from terminal import fg_16b, deco
+import settings
 
 def header():
     print(f'╔{"═"*78}╗')
@@ -114,6 +115,33 @@ def ask_four_figures():
             break
     
     return output
+
+def save_dialogue(nm, qn, dt, ch):
+    while True:
+        # ask for file name. Use default setting if empty
+        try: filename = input('\nFile name: ') or settings.LOG_DEFAULT_NAME
+        except KeyboardInterrupt: return
+        
+        # set newline character
+        if settings.LOG_NEWLINE == 'windows': nl = '\r\n'
+        else: nl = '\n'
+        
+        # fetch chart data
+        content = ch.generate_log_string(nl)
+        
+        try:
+            log = open(filename, 'a+')
+            log.write(f'Name : {nm}{nl}Query: {qn}{nl}Time :{dt}{nl}{nl}')
+            log.write(content)
+            log.write('='*80 + nl)
+            log.close()
+            print('File saved successfully.')
+            return
+        
+        except IOError:
+            print(fg_16b(f'Cannot write to file: {filename}.', 1))
+            print('Please try another name or press Ctrl + C to cancel.')
+            continue
 
 def correspondence_table(sort_by='number'):
     

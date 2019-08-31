@@ -2,7 +2,7 @@
 
 # Chart processing and output
 
-from figures import Figure, link_figures
+from figures import Figure, link_figures, figure_info
 from terminal import Reset, Fore
 
 court = ['RW', 'LW', 'Ju', 'Rc']
@@ -226,7 +226,7 @@ class ShieldChart(object):
         print(f'╰{"─"*78}╯')
         # End of function
     
-    def generate_log_string(end='\n'):
+    def generate_log_string(self, end='\n'):
         'Generate a string to be written into a plain text file'
         
         output = ''
@@ -243,6 +243,20 @@ class ShieldChart(object):
         
         for line in template: output += line + end
         return output
+    
+    def explain(self):
+        
+        print('\nThe answer to your question is:')
+        figure_info(self.JU)
+        
+        print('\nThe past is described by:')
+        figure_info(self.WR)
+        
+        print('\nThe future is described by:')
+        figure_info(self.WL)
+        
+        print('\nThe final result is described by:')
+        figure_info(self.RC)
 
 
 class HouseChart(object):
@@ -495,7 +509,7 @@ class HouseChart(object):
         for line in output:
             print(line)
     
-    def generate_log_string(end='\n'):
+    def generate_log_string(self, end='\n'):
         'Generates a string to be written into plain text file'
         
         output = ''
@@ -524,3 +538,18 @@ class HouseChart(object):
         
         for line in template: output += line + end
         return output
+    
+    def explain(self):
+        
+        if self.PERFECTION > 0:
+            print('\nThe answer to your question is "yes".')
+        
+        else:
+            print('\nThe answer to your question is "no".')
+        
+        print('\nThe querent is described by:')
+        figure_info(Figure(self.Querent))
+        
+        print('\nThe quesited is described by:')
+        figure_info(Figure(self.Quesited))
+        

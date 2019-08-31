@@ -8,7 +8,6 @@ import charts
 import interface
 import settings
 from time import strftime
-from terminal import fg_16b
 
 # Greet the user
 interface.header()
@@ -52,7 +51,7 @@ while True:
     print(' ')
     
     # get and show the time
-    date_time = strftime("%Y-%m-%d (%a) %H:%M:%S")
+    date_time = strftime("%Y-%m-%d %A %H:%M:%S")
     print(f'╔{"═"*78}╗')
     print(f'║{date_time:^78}║')
     print(f'╚{"═"*78}╝')
@@ -71,39 +70,17 @@ while True:
     # draw the chart
     Chart.draw()
     
-    # ask what to do next
-    command = interface.menu_chart_after()
-    # quit
-    if (command == 'q') or (command == 'Q'): sys.exit()
-    
-    # return to main menu
-    elif (command == 'r') or (command == 'R'): continue
-    
-    # save to file
-    elif (command == 's') or (command == 'S'):
-        while True:
-            # ask for file name. Use default setting if empty
-            try: filename = input('File name: ') or settings.LOG_DEFAULT_NAME
-            except KeyboardInterrupt: break
-            
-            # set newline character
-            if settings.LOG_NEWLINE == 'windows': nl = '\r\n'
-            else: nl = '\n'
-        
-            # fetch chart data
-            content = Chart.generate_log_string(nl)
-        
-            try:
-                log = open(filename, 'a+')
-                log.write(f'Name : {name}{nl}Query: {question}{nl}Time :{date_time}{nl}{nl}')
-                log.write(content)
-                log.write('='*80 + nl)
-                log.close()
-                break
-        
-            except IOError:
-                print(fg16_b(f'Cannot write to file: {filename}.', 1))
-                print('Please try another name or press Ctrl + C to cancel.')
-                continue
-        
-    else: pass
+    while True:
+        # ask what to do next
+        command = interface.menu_chart_after()
+        # quit
+        if (command == 'q') or (command == 'Q'): sys.exit()
+        # return to main menu
+        elif (command == 'r') or (command == 'R'): break
+        # explain figure meanings
+        elif (command == 'x') or (command == 'X'):
+            Chart.explain()
+        # save to file
+        elif (command == 's') or (command == 'S'):
+            interface.save_dialogue(name, question, date_time, Chart)
+        else: pass

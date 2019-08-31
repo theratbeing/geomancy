@@ -16,9 +16,6 @@ HOUSE_SYSTEM = 'normal'
 # Significator of querent (house number - 1)
 HOUSE_QUERENT = 0
 
-# Enable or disable color output. Set to 'True' or 'False' (without quotes!).
-USE_COLOR = True
-
 # Change the color scheme used to draw the figures in a chart.
 # Available options: 'element' 'planet' 'zodiac'.
 SHIELD_COLOR_SCHEME = 'element'

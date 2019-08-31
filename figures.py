@@ -3,7 +3,7 @@
 # Geomantic Figure Data
 
 from random import choice
-from terminal import esc_16b, Reset
+from terminal import esc_16b, Reset, Style
 import settings
 
 VIA, POP = '1111', '2222'
@@ -34,22 +34,22 @@ Name = {VIA:'Via', POP:'Populus', LAE:'Laetitia', TRI:'Tristitia',
         ACQ:'Acquisitio', AMI:'Amissio', CON:'Conjunctio', CAR:'Carcer',
         CAP:'Caput Draconis', CAU:'Cauda Draconis', MAJ:'Fortuna Major', MIN:'Fortuna Minor'}
 
-Meaning = {VIA:'', 
-           POP:'', 
-           LAE:'', 
-           TRI:'',
-           RUB:'', 
-           ALB:'', 
-           PUA:'', 
-           PUR:'',
-           ACQ:'', 
-           AMI:'', 
-           CON:'', 
-           CAR:'',
-           CAP:'', 
-           CAU:'', 
-           MAJ:'', 
-           MIN:''}
+Meaning = {VIA:'Road, journey, change of fortune.',
+           POP:'Crowd, multitude, assembly. Neutral figure.',
+           LAE:'Happiness and good health.',
+           TRI:'Sorrow, illness. Bad except for land and agriculture.',
+           RUB:'Passion, vice, hot temper. Unfavorable. In 1st position it means the querent is dishonest.',
+           ALB:'Peace, wisdom, patience. Favorable but weak.',
+           PUA:'Female, beauty. Good figure but fickle.',
+           PUR:'Male, power, reckless action. Bad except for love and war.',
+           ACQ:'Gain.',
+           AMI:'Loss. Bad for wealth but good for love.',
+           CON:'Combination, mixed results.',
+           CAR:'Restriction, obstacle.',
+           CAP:'Beginnings, ascending movement. Favorable.',
+           CAU:"Endings, descending movement. Unfavorable. In 1st position it means the querent won't change his/her view.",
+           MAJ:"Success through one's own effort. Good for beginnings.",
+           MIN:'Outside help, outer honor, quick result. Good for endings.'}
 
 s, d = ' ● ', '● ●'
 
@@ -87,39 +87,29 @@ class Virtue:
         Zodiac = Zodi_A
     else: Zodiac = Zodi_G
     
-    Mansion = {VIA:"(10) Al-Jab'hah", POP:'(20) An-Na‘āʾam',
-               LAE:'( 4) Ad-Dabarān', TRI:'(19) Ash-Shawlah',
-               RUB:'( 6) Al-Han‘ah', ALB:'( 8) An-Nathrah, ( 9) Aṭ-Ṭarf',
-               PUA:'( 5) Al-Haq‘ah', PUR:'(15) Al-Ghafr, (16) Az-Zubānā',
-               ACQ:'( 1) An-Naṭḥ, ( 2) Al-Buṭayn', AMI:'(17) Al-Iklīl',
-               CON:'(14) As-Simāk', CAR:'(28) Ar-Rashāʾ',
-               CAP:'(13) Al-‘Awwāʾ', CAU:'(21) Al-Baldah',
-               MAJ:'( 3) Ath-Thurayyā',
-               MIN:'(25) Al-ʾAkhbiyyah, (26) Al-Muqdim, (27) Al-Muʾkhar'}
+    Mansion = {VIA:"10. Al-Jab'hah", POP:'20. An-Na‘āʾam',
+               LAE:'4. Ad-Dabarān', TRI:'19. Ash-Shawlah',
+               RUB:'6. Al-Han‘ah', ALB:'8. An-Nathrah, 9. Aṭ-Ṭarf',
+               PUA:'5. Al-Haq‘ah', PUR:'15. Al-Ghafr, 16. Az-Zubānā',
+               ACQ:'1. An-Naṭḥ, 2. Al-Buṭayn', AMI:'17. Al-Iklīl',
+               CON:'14. As-Simāk', CAR:'28. Ar-Rashāʾ',
+               CAP:'13. Al-‘Awwāʾ', CAU:'21. Al-Baldah',
+               MAJ:'3. Ath-Thurayyā',
+               MIN:'25. Al-ʾAkhbiyyah, 26. Al-Muqdim, 27. Al-Muʾkhar'}
 
 class Color:
     
-    'Color correspondences (Golden Dawn Queen Scale) in ANSI 256 color mode. See terminal.py for the full palette'
+    'Color correspondences (Golden Dawn Queen Scale) in ANSI 256 color mode. See terminal.py for the palette'
     
-    if settings.USE_COLOR:
-        WHI_N, WHI_B, WHI_D = esc_16b(7), esc_16b(15), esc_16b(250)
-        BLA_N, BLA_B, BLA_D = esc_16b(0), esc_16b(8), esc_16b(232)
-        RED_N, RED_B, RED_D = esc_16b(1), esc_16b(9), esc_16b(52)
-        YEL_N, YEL_B, YEL_D = esc_16b(3), esc_16b(11), esc_16b(214)
-        BLU_N, BLU_B, BLU_D = esc_16b(4), esc_16b(12), esc_16b(17)
-        ORA_N, ORA_B, ORA_D = esc_16b(202), esc_16b(208), esc_16b(130)
-        GRN_N, GRN_B, GRN_D = esc_16b(2), esc_16b(10), esc_16b(22)
-        PUR_N, PUR_B, PUR_D = esc_16b(128), esc_16b(200), esc_16b(56)
-    else:
-        WHI_N, WHI_B, WHI_D = '', '', ''
-        BLA_N, BLA_B, BLA_D = '', '', ''
-        RED_N, RED_B, RED_D = '', '', ''
-        YEL_N, YEL_B, YEL_D = '', '', ''
-        BLU_N, BLU_B, BLU_D = '', '', ''
-        ORA_N, ORA_B, ORA_D = '', '', ''
-        GRN_N, GRN_B, GRN_D = '', '', ''
-        PUR_N, PUR_B, PUR_D = '', '', ''
-    
+    WHI_N, WHI_B, WHI_D = esc_16b(7), esc_16b(15), esc_16b(250)
+    BLA_N, BLA_B, BLA_D = esc_16b(0), esc_16b(8), esc_16b(232)
+    RED_N, RED_B, RED_D = esc_16b(1), esc_16b(9), esc_16b(52)
+    YEL_N, YEL_B, YEL_D = esc_16b(3), esc_16b(11), esc_16b(214)
+    BLU_N, BLU_B, BLU_D = esc_16b(4), esc_16b(12), esc_16b(17)
+    ORA_N, ORA_B, ORA_D = esc_16b(202), esc_16b(208), esc_16b(130)
+    GRN_N, GRN_B, GRN_D = esc_16b(2), esc_16b(10), esc_16b(22)
+    PUR_N, PUR_B, PUR_D = esc_16b(128), esc_16b(200), esc_16b(56)
+
     Element = {ELF:RED_N, ELA:YEL_N, ELW:BLU_N, ELE:GRN_N}
     
     Planet = {SAT:BLA_B, JUP:BLU_B, MAR:RED_B,
@@ -148,6 +138,9 @@ class Figure(object):
         self.symbols = f'{self.color["element"]}{self.element[0:3]} '\
             f'{self.color["planet"]}{self.planet[0:5]} '\
             f'{self.color["zodiac"]}{self.zodiac[0:5]}{Reset}'
+        self.syms = f'{self.color["element"]}{self.element[0]} '\
+            f'{self.color["planet"]}{self.planet[0]} '\
+            f'{self.color["zodiac"]}{self.zodiac[0]}{Reset}'
 
 def link_figures(iterable):
     result = list()
@@ -162,7 +155,7 @@ def process_figures(fig_a, fig_b):
         else: result = result + '1'
     return result
     
-def generate_figures(mothers=tuple()):
+def generate_figures(mothers=list()):
     result = list()
     
     if len(mothers) == 4:
@@ -188,10 +181,20 @@ def generate_complete_figures():
         result.append(Figure(n))
     return result
 
-if __name__ == '__main__':
+def figure_info(fo, expert=False):
+    ' expects a Figure object to work'
+    zod_a, zod_g = Virtue.Zodi_A[fo.number], Virtue.Zodi_G[fo.number]
     
-    test = generate_figures()
+    if expert:
+        print(f'{" "*7}{Style["underline"]}{fo.name} ({fo.number}){Reset}')
+        print(f' {fo.shape[0]:^5} Element: {fo.color["element"]}{fo.element:<8}{Reset}')
+        print(f' {fo.shape[1]:^5} Planet : {fo.color["planet"]}{fo.planet}{Reset}')
+        print(f' {fo.shape[2]:^5} Zodiac : {Color.Zodiac[zod_g]}{zod_g}{Reset} (Gerardus), {Color.Zodiac[zod_a]}{zod_a}{Reset} (Agrippa)')
+        print(f' {fo.shape[3]:^5} Mansion: {fo.mansion}')
+        print(f'{" "*7}Meaning: {fo.meaning}')
     
-    for f in test:
-        print(f.name)
-
+    else:
+        print(f' {fo.shape[0]:^5} {Style["underline"]}{fo.name} ({fo.number}){Reset}')
+        print(f' {fo.shape[1]:^5} Element: {fo.color["element"]}{fo.element:<8}{Reset}')
+        print(f' {fo.shape[2]:^5} Planet : {fo.color["planet"]}{fo.planet}{Reset}')
+        print(f' {fo.shape[3]:^5} Meaning: {fo.meaning}')
