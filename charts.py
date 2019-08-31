@@ -249,13 +249,13 @@ class ShieldChart(object):
         print('\nThe answer to your question is:')
         figure_info(self.JU)
         
-        print('\nThe past is described by:')
+        print('The past is described by:')
         figure_info(self.WR)
         
-        print('\nThe future is described by:')
+        print('The future is described by:')
         figure_info(self.WL)
         
-        print('\nThe final result is described by:')
+        print('The final result is described by:')
         figure_info(self.RC)
 
 
@@ -547,9 +547,9 @@ class HouseChart(object):
         else:
             print('\nThe answer to your question is "no".')
         
-        print('\nThe querent is described by:')
+        print('The querent is described by:')
         figure_info(Figure(self.Querent))
         
-        print('\nThe quesited is described by:')
+        print('The quesited is described by:')
         figure_info(Figure(self.Quesited))
         

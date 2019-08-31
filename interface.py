@@ -41,12 +41,12 @@ def menu_main():
 def menu_chart_after():
     
     button = [deco(' S ', 'reverse'), deco(' X ', 'reverse'), deco(' R ', 'reverse'), deco(' Q ', 'reverse'), deco(' Enter ', 'reverse')]
-    selection = input(f'|{button[0]} Save  |{button[1]} Explain meanings  |{button[2]} Return  |{button[3]} Quit  |{button[4]} command: ')
-    
     expected = ('s', 'S', 'x', 'X', 'r', 'R', 'q', 'Q')
     
     while True:
+        selection = input(f'|{button[0]} Save  |{button[1]} Explain meanings  |{button[2]} Return  |{button[3]} Quit  |{button[4]} command: ')
         if selection in expected: break
+        elif selection == '': pass
         else: print(fg_16b(f'Unrecognized command: {selection}. Please retry.', 1))
     
     return selection

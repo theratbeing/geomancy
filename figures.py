@@ -191,10 +191,10 @@ def figure_info(fo, expert=False):
         print(f' {fo.shape[1]:^5} Planet : {fo.color["planet"]}{fo.planet}{Reset}')
         print(f' {fo.shape[2]:^5} Zodiac : {Color.Zodiac[zod_g]}{zod_g}{Reset} (Gerardus), {Color.Zodiac[zod_a]}{zod_a}{Reset} (Agrippa)')
         print(f' {fo.shape[3]:^5} Mansion: {fo.mansion}')
-        print(f'{" "*7}Meaning: {fo.meaning}')
+        print(f'{" "*7}Meaning: {fo.meaning}\n')
     
     else:
         print(f' {fo.shape[0]:^5} {Style["underline"]}{fo.name} ({fo.number}){Reset}')
         print(f' {fo.shape[1]:^5} Element: {fo.color["element"]}{fo.element:<8}{Reset}')
         print(f' {fo.shape[2]:^5} Planet : {fo.color["planet"]}{fo.planet}{Reset}')
-        print(f' {fo.shape[3]:^5} Meaning: {fo.meaning}')
+        print(f' {fo.shape[3]:^5} Meaning: {fo.meaning}\n')
