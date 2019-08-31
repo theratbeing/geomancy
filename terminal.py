@@ -85,23 +85,19 @@ def color_palette():
 def color_8b(text, fg='none', bg='none', st='none'):
     return Fore[fg] + Back[bg] + Style[st] + text + Reset
 
-def color_16b(text, fg=255, bg=232, st='none'):
-    foreground = f'\u001b[38;5;{fg}m'
-    background = f'\u001b[48;5;{bg}m'
-    return foreground + background + Style[st] + text + Reset
+def fg_16b(text, fg):
+    return f'\u001b[38;5;{fg}m{text}{Reset}'
 
-def color_24b(text, fg=(255, 255, 255), bg=(0, 0, 0), st='none'):
-    foreground = f'\u001b[38;2;{fg[0]};{fg[1]};{fg[2]}m'
-    background = f'\u001b[48;2;{bg[0]};{bg[1]};{bg[2]}m'
-    return foreground + background + Style[st] + text + Reset
+def bg_16b(text, bg):
+    return f'\u001b[48;5;{bg}m{text}{Reset}'
+
+def deco(text, style):
+    return Style[style] + text + Reset
 
 def esc_16b(number, mode='f'):
-    if mode == 'f':
-        return f'\u001b[38;5;{number}m'
-    elif mode == 'b':
-        return f'\u001b[48;5;{number}m'
-    elif mode == 'x':
-        return f'\u001b[{number}m'
+    if mode == 'f': return f'\u001b[38;5;{number}m'
+    elif mode == 'b': return f'\u001b[48;5;{number}m'
+    elif mode == 'x': return f'\u001b[{number}m'
     else: raise ValueError('`mode` must be set to either `f`, `b`, or `x`!')
 
 if __name__ == '__main__':
