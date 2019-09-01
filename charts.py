@@ -3,7 +3,7 @@
 # Chart processing and output
 
 from figures import Figure, link_figures, figure_info
-from terminal import Reset, Fore
+from terminal import Reset, Fore, fg_16b
 
 court = ['RW', 'LW', 'Ju', 'Rc']
 
@@ -542,10 +542,10 @@ class HouseChart(object):
     def explain(self):
         
         if self.PERFECTION > 0:
-            print('\nThe answer to your question is "yes".')
+            print(fg_16b('\nThe answer to your question is "yes".\n', 10))
         
         else:
-            print('\nThe answer to your question is "no".')
+            print(fg_16b('\nThe answer to your question is "no".\n', 9))
         
         print('The querent is described by:')
         figure_info(Figure(self.Querent))

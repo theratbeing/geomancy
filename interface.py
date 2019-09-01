@@ -7,29 +7,25 @@ from terminal import fg_16b, deco
 import settings
 
 def header():
-    print(f'╔{"═"*78}╗')
-    print(f'║{"Geomancy Chart Generator":^78}║')
-    print(f'╚{"═"*78}╝')
+    pass
 
 def menu_main():
     ' The main menu '
     
-    window = [f'┌{"─"*40}┐',
-              f'│ [1] Create shield chart (automatic   ) │',
-              f'│ [2] Create shield chart (manual input) │',
-              f'│ {" ":<38} │',
-              f'│ [3] Create house chart  (automatic   ) │',
-              f'│ [4] Create house chart  (manual input) │',
-              f'│ {" ":<38} │',
-              f'│ {"[H] Help":<38} │',
-              f'│ {"[Q] Quit":<38} │',
-              f'└{"─"*40}┘']
+    window = [fg_16b(' [1] Create shield chart (automatic)', 6),
+              fg_16b(' [2] Create shield chart (manual input)', 12),
+              ' ',
+              fg_16b(' [9] Create house chart  (automatic)', 6),
+              fg_16b(' [0] Create house chart  (manual input)', 12),
+              ' ',
+              ' [H] Help',
+              ' [Q] Quit\n']
     
-    expected = ('1', '2', '3', '4', 'h', 'H', 'q', 'Q')
+    print(f'\n{"Menu":^40}')
+    print('─'*40)
+    for line in window: print(line)
     
-    print(f'\n{"Menu":^80}')
-    for line in window: print(f'{line:^80}')
-    
+    expected = ('1', '2', '9', '0', 'h', 'H', 'q', 'Q')
     while True:
         selection = input('Type a character and press enter: ')
         if selection in expected: break
@@ -40,7 +36,7 @@ def menu_main():
 
 def menu_chart_after():
     
-    button = [deco(' S ', 'reverse'), deco(' X ', 'reverse'), deco(' R ', 'reverse'), deco(' Q ', 'reverse'), deco(' Enter ', 'reverse')]
+    button = [deco(' S ', 'reverse'), deco(' X ', 'reverse'), deco(' R ', 'reverse'), deco(' Q ', 'reverse'), ' Enter ']
     expected = ('s', 'S', 'x', 'X', 'r', 'R', 'q', 'Q')
     
     while True:
@@ -53,30 +49,29 @@ def menu_chart_after():
 
 def menu_chart_house():
     
-    window = [f'┌{"─"*55}┐',
-              f'│ {"[ 1] The self.":<53} │',
-              f'│ {"[ 2] Money, movable wealth.":<53} │',
-              f'│ {"[ 3] Siblings, communication, neighborhood.":<53} │',
-              f'│ {"[ 4] Parents, land, house, lost item.":<53} │',
-              f'│ {"[ 5] Children and games.":<53} │',
-              f'│ {"[ 6] Health, employees, pets and small animals.":<53} │',
-              f'│ {"[ 7] Spouse, partner, relationship.":<53} │',
-              f'│ {"[ 8] Death, inheritance, the occult.":<53} │',
-              f'│ {"[ 9] Religion, philosophy, education, journeys.":<53} │',
-              f'│ {"[10] Career, government, superiors.":<53} │',
-              f'│ {"[11] Friends and dreams.":<53} │',
-              f'│ {"[12] Imprisonment, enemies, barn and large animals.":<53} │',
-              f'│ {" ":<53} │',
-              f'│ {"[R ] Return":<53} │',
-              f'│ {"[Q ] Quit":<53} │',
-              f'└{"─"*55}┘', ' ']
+    window = [fg_16b(' [ 1] The self.', 12),
+              fg_16b(' [ 2] Money, movable wealth.', 2),
+              fg_16b(' [ 3] Siblings, communication, neighborhood.', 12),
+              fg_16b(' [ 4] Parents, land, house, lost item.', 2),
+              fg_16b(' [ 5] Children and games.', 12),
+              fg_16b(' [ 6] Health, employees, pets and small animals.', 2),
+              fg_16b(' [ 7] Spouse, partner, relationship.', 12),
+              fg_16b(' [ 8] Death, inheritance, the occult.', 2),
+              fg_16b(' [ 9] Religion, philosophy, education, journeys.', 12),
+              fg_16b(' [10] Career, government, superiors.', 2),
+              fg_16b(' [11] Friends and dreams.', 12),
+              fg_16b(' [12] Imprisonment, enemies, barn and large animals.', 2),
+              ' ',
+              ' [R ] Return',
+              ' [Q ] Quit\n',]
     
     expected = ['r', 'R', 'q', 'Q']
     for i in range(1, 13):
         expected.append(str(i))
     
-    print(f'\n{"The Astrological Houses":^80}')
-    for line in window: print(f'{line:^80}')
+    print(f'\n{"The Astrological Houses":^53}')
+    print('─'*53)
+    for line in window: print(line)
     
     while True:
         selection = input('Select significator for quesited: ')

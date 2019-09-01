@@ -25,7 +25,7 @@ while True:
     else: pass
     
     # ask significator if applicable
-    if (command == '3') or (command == '4'):
+    if (command == '9') or (command == '0'):
         sub_command = interface.menu_chart_house()
         if (sub_command == 'q') or (sub_command == 'Q'): sys.exit()
         elif (sub_command == 'r') or (sub_command == 'R'): continue
@@ -52,16 +52,14 @@ while True:
     
     # get and show the time
     date_time = strftime("%Y-%m-%d %A %H:%M:%S")
-    print(f'╔{"═"*78}╗')
-    print(f'║{date_time:^78}║')
-    print(f'╚{"═"*78}╝')
+    print(f'{date_time:^80}')
     
     # build the chart
     if (command == '1') or (command == '2'):
         Chart = charts.ShieldChart(raw_chart)
         color = settings.SHIELD_COLOR_SCHEME
     
-    elif (command == '3') or (command == '4'):
+    elif (command == '9') or (command == '0'):
         Chart = charts.HouseChart(raw_chart, settings.HOUSE_SYSTEM, settings.HOUSE_QUERENT, quesited)
         color = settings.HOUSE_COLOR_SCHEME
     
