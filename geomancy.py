@@ -10,7 +10,7 @@ import settings
 from time import strftime
 
 # Greet the user
-interface.header()
+#interface.header()
 
 # Main loop
 while True:
@@ -20,7 +20,10 @@ while True:
     
     
     # if help or exit
-    if (command == 'h') or (command == 'H'): continue
+    if (command == 'h') or (command == 'H'):
+        interface.menu_help()
+        continue
+    
     elif (command == 'q') or (command == 'Q'): sys.exit()
     else: pass
     
