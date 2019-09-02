@@ -1,44 +1,42 @@
 # geomancy.py
 Python script to generate charts used in geomancy divination method.
 
-(This program is currently being rewritten but the old program is available as `geomancy_old`.)
-
 ### Features
+* Create shield chart and house chart manually or automatically.
+
+* Correspondence tables based on Gerardus of Cremona, H.C. Agrippa, and J.M. Greer.
+
 * Chart analysis: automatically detects modes of perfection and way of points.
 
 * Color output: figures have different color depending on its correspondence and the chart type.
 
-* Interactive mode: the script asks for querent name, the query, and chart type before generating a chart. Each querent will have their own log file. 
-
-* Automatic logging: output will be automatically written to a file.
 
 **Avilable chart types:**
 
 Agrippa/Golden Dawn house chart: Mothers are placed in angular houses, Daughters are placed in succedent houses, Nieces are placed in cadent houses.
 
-Medieval-style simple house chart: figures are placed following the order of their generation.
+Traditional house chart: figures are placed following the order of their generation.
 
 Traditional shield chart including the Reconciler.
-
-*You can tell the script to only output names of figures.*
 
 ### How to use
 Launch it from the terminal/command line with `python3 geomancy.py`.
 
-Using `python3 geomancy.py -h` will show you the help screen.
-
 ### Dependencies
-Color support on Windows requires [colorama](https://pypi.org/project/colorama/) module.
+Python 3.6+
+Terminal emulator with 16-bit ANSI color support
+
+`geomancy_old.py` only requires Python 3.x with the `--no-color` option.
 
 ### Screenshots
-Text-only chart with simple analysis:
+Traditional shield chart with elemental colors:
 
-![Text-only analysis](/screenshots/shield_analysis.png)
+![Shield chart](/screenshots/shield_chart.png)
 
-Interactive mode:
+House chart with Hermetic planetary colors:
 
-![Interactive mode](/screenshots/interactive_mode.png)
+![House chart](/screenshots/house_chart.png)
 
-Dual mode:
+Explanation of figures:
 
-![Dual mode](/screenshots/double.png)
+![Explanations](/screenshots/explanations.png)
