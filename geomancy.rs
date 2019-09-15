@@ -466,20 +466,51 @@ impl Chart <'_> {
 					branch5, branch6, branch7, branch8];
 		
 		// see how many same number in a row
-		let mut output :Vec<i32> = vec![];
+		let mut tree_map :Vec<i32> = vec![];
 		for branch in tree.iter() {
-			output.push(Chart::same_in_row(branch));
+			tree_map.push(Chart::same_in_row(branch));
 		}
 		
 		// we only need to know the longest chain
 		// 8 branches -> vector length 8
-		let maximum = Chart::max_in_list(&output);
+		let maximum = Chart::max_in_list(&tree_map);
 		for i in 0..8 {
-			if output[i] < maximum {
-				output[i] = 0;
+			if tree_map[i] < maximum {
+				tree_map[i] = 0;
 			}
 		}
-		output
+		
+		// remove duplicates but keep first occurence intact
+		if maximum == 1 { tree_map = [1, 0, 0, 0, 0, 0, 0, 0].to_vec(); }
+		
+		// exception: number 2 may appear twice in specific places
+		for n in 0..4 {
+			if tree_map[n] == 2 {
+				tree_map[0] = 2;
+				tree_map[1] = 0;
+				tree_map[2] = 0;
+				tree_map[3] = 0;
+			}
+		}
+		for n in 4..8 {
+			if tree_map[n] == 2 {
+				tree_map[4] = 2;
+				tree_map[5] = 0;
+				tree_map[6] = 0;
+				tree_map[7] = 0;
+			}
+		}
+		
+		// no exception here
+		if maximum == 3 {
+			for i in 0..4 {
+				let a = i*2;
+				let b = a+1;
+				if tree_map[a] == tree_map[b] { tree_map[b] = 0; } 
+			}
+		}
+		
+		tree_map
 	}
 	
 	fn draw_shield( &self ) {
