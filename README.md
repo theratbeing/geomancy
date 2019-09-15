@@ -40,3 +40,6 @@ House chart with Hermetic planetary colors:
 Explanation of figures:
 
 ![Explanations](/screenshots/explanations.png)
+
+TODO: Clean up and consolidate the Python scripts
+TODO: Write this in Rust (can be compiled to native binary format)
