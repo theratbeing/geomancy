@@ -15,6 +15,7 @@ pub mod color {
 	// module containing ANSI color codes in 16-bit notation
 	// makes names easier to look with color:: prefix
 	pub const RESET		:&str = "\x1b[0m";
+	pub const REVERSE	:&str = "\x1b[7m";
 	pub const BLACK		:&str = "\x1b[38;5;0m";
 	pub const RED		:&str = "\x1b[38;5;1m";
 	pub const GREEN		:&str = "\x1b[38;5;2m";
@@ -134,7 +135,7 @@ struct Figure<'a> {
 	 * zodiac2	: H.C. Agrippa
 	 * */
 	name    : &'a str,
-	points  : [i32; 4],
+	points  : [u32; 4],
 	lines   : [&'a str; 4],
 	element1: Virtue <'a>,
 	element2: Virtue <'a>,
@@ -255,7 +256,7 @@ const F_PUR : Figure = Figure {
 	manzil	: "15. Al-Ghafr, 16. Az-Zubānā",
 };
 const F_ACQ : Figure = Figure {
-	name	: "Acquisitio",	points	: [2, 1, 2, 1], lines	: L_AMI,
+	name	: "Acquisitio",	points	: [2, 1, 2, 1], lines	: L_ACQ,
 	element1: E_AIR,		element2: E_AIR,		planet	: P_JUPITER,
 	zodiac1	: Z_ARIES,		zodiac2 : Z_SAGITT,
 	meaning : "Gain.",
@@ -321,12 +322,12 @@ const JUDGE		: usize	= 14; // + 1 = Reconciler
 const CHART_SIZE: usize = 16;
 
 struct Chart <'a> {
-	array	: Vec <[i32;4]>,
+	array	: Vec <[u32;4]>,
 	figures	: Vec <Figure <'a>>,
 }
 
 impl Chart <'_> {
-	fn add_figures(a :[i32; 4], b :[i32; 4]) -> [i32; 4] {
+	fn add_figures(a :[u32; 4], b :[u32; 4]) -> [u32; 4] {
 		let mut output = [1, 1, 1, 1];
 		for lin in 0..4 {
 			if a[lin] == b[lin] { output[lin] = 2; }
@@ -334,7 +335,7 @@ impl Chart <'_> {
 		output
 	}
 	
-	fn array2figure <'a> ( array :[i32; 4] ) -> Figure <'a> {
+	fn array2figure <'a> ( array :[u32; 4] ) -> Figure <'a> {
 		match array {
 			[1, 1, 1, 1] => F_VIA,
 			[1, 1, 1, 2] => F_CAU,
@@ -357,11 +358,11 @@ impl Chart <'_> {
 	}
 	
 	fn array2chart(
-		a :[i32;4], b :[i32;4], c :[i32;4],
-		d :[i32;4] ) -> Vec<[i32;4]> {
+		a :[u32;4], b :[u32;4], c :[u32;4],
+		d :[u32;4] ) -> Vec<[u32;4]> {
 		
-		// takes 4 [i32;4] arrays and return a vecor with 16 arrays
-		let mut output :Vec<[i32;4]> = vec![];
+		// takes 4 [u32;4] arrays and return a vecor with 16 arrays
+		let mut output :Vec<[u32;4]> = vec![];
 		output.push(a);
 		output.push(b);
 		output.push(c);
@@ -388,10 +389,10 @@ impl Chart <'_> {
 	}
 	
 	fn new <'a> (
-		a :[i32;4], b :[i32;4],
-		c :[i32;4], d :[i32;4])  -> Chart <'a> {
+		a :[u32;4], b :[u32;4],
+		c :[u32;4], d :[u32;4])  -> Chart <'a> {
 		
-		let array :Vec<[i32;4]> = Chart::array2chart(a, b, c, d);
+		let array :Vec<[u32;4]> = Chart::array2chart(a, b, c, d);
 		let mut figures :Vec<Figure> = vec![];
 		for ar in array.iter() {
 			figures.push(Chart::array2figure(*ar));
@@ -399,10 +400,10 @@ impl Chart <'_> {
 		Chart { array, figures }
 	}
 	
-	fn same_in_row( source :&[&i32; 4] ) -> i32 {
+	fn same_in_row( source :&[&u32; 4] ) -> u32 {
 		// needed for Via Puncti
 		let head = source[0];
-		let mut score :i32 = 0;
+		let mut score :u32 = 0;
 		for n in source.iter() {
 			if *n != head { break; }
 			score += 1;
@@ -410,9 +411,9 @@ impl Chart <'_> {
 		score
 	}
 
-	fn max_in_list( source :&Vec<i32> ) -> i32 {
+	fn max_in_list( source :&Vec<u32> ) -> u32 {
 		// Via Puncti
-		let mut score :i32 = 0;
+		let mut score :u32 = 0;
 		for n in source.iter() {
 			if *n > score {
 				score = *n;
@@ -421,7 +422,7 @@ impl Chart <'_> {
 		score
 	}
 	
-	fn calculate_vp( &self ) -> Vec<i32> {
+	fn calculate_vp( &self ) -> Vec<u32> {
 		/* Take first line of every figure, see if they are same with judge's.
 		 * Outputs a vector containing only branches of Via Puncti with maximum
 		 * score. Lots of `let` statement for maximum READIBILITY
@@ -452,21 +453,19 @@ impl Chart <'_> {
 		 * Judge <
 		 *			L. Witness, etc.
 		 */
-		 
-		let branch1 = [p_judge, p_right, p_niec1, p_moth1];
-		let branch2 = [p_judge, p_right, p_niec1, p_moth2];
-		let branch3 = [p_judge, p_right, p_niec2, p_moth3];
-		let branch4 = [p_judge, p_right, p_niec2, p_moth4];
-		let branch5 = [p_judge, p_left, p_niec3, p_daug1];
-		let branch6 = [p_judge, p_left, p_niec3, p_daug2];
-		let branch7 = [p_judge, p_left, p_niec4, p_daug3];
-		let branch8 = [p_judge, p_left, p_niec4, p_daug4];
 		
-		let tree = [branch1, branch2, branch3, branch4,
-					branch5, branch6, branch7, branch8];
+		let tree = [
+			[p_judge, p_right, p_niec1, p_moth1],
+			[p_judge, p_right, p_niec1, p_moth2],
+			[p_judge, p_right, p_niec2, p_moth3],
+			[p_judge, p_right, p_niec2, p_moth4],
+			[p_judge, p_left, p_niec3, p_daug1],
+			[p_judge, p_left, p_niec3, p_daug2],
+			[p_judge, p_left, p_niec4, p_daug3],
+			[p_judge, p_left, p_niec4, p_daug4], ];
 		
 		// see how many same number in a row
-		let mut tree_map :Vec<i32> = vec![];
+		let mut tree_map :Vec<u32> = vec![];
 		for branch in tree.iter() {
 			tree_map.push(Chart::same_in_row(branch));
 		}
@@ -481,7 +480,10 @@ impl Chart <'_> {
 		}
 		
 		// remove duplicates but keep first occurence intact
-		if maximum == 1 { tree_map = [1, 0, 0, 0, 0, 0, 0, 0].to_vec(); }
+		// array index for the result
+		if maximum == 1 {
+			tree_map = [1, 0, 0, 0, 0, 0, 0, 0].to_vec();
+		}
 		
 		// exception: number 2 may appear twice in specific places
 		for n in 0..4 {
@@ -514,13 +516,117 @@ impl Chart <'_> {
 	}
 	
 	fn draw_shield( &self ) {
+		/* First we'll check for Via Puncti to highlight certain figures.
+		 * Lots of `let` statement for maximum READIBILITY
+		 */
+		let p_judge = &self.array[JUDGE][0];
+		let p_right = &self.array[WITNESS][0];
+		let p_left  = &self.array[WITNESS+1][0];
+		let p_niec1 = &self.array[NIECE][0];
+		let p_niec2 = &self.array[NIECE+1][0];
+		let p_niec3 = &self.array[NIECE+2][0];
+		let p_niec4 = &self.array[NIECE+3][0];
+		let p_daug1 = &self.array[DAUGHTER][0];
+		let p_daug2 = &self.array[DAUGHTER+1][0];
+		let p_daug3 = &self.array[DAUGHTER+2][0];
+		let p_daug4 = &self.array[DAUGHTER+3][0];
+		let p_moth1 = &self.array[MOTHER][0];
+		let p_moth2 = &self.array[MOTHER+1][0];
+		let p_moth3 = &self.array[MOTHER+2][0];
+		let p_moth4 = &self.array[MOTHER+3][0];
+		
+		let mut s_right = format!("{:^23}", "Right");
+		let mut s_left  = format!("{:^23}", "Left");
+		let mut s_niec1 = format!("{:^11}", "9");
+		let mut s_niec2 = format!("{:^11}", "10");
+		let mut s_niec3 = format!("{:^11}", "11");
+		let mut s_niec4 = format!("{:^11}", "12");
+		let mut s_daug1 = format!("{:^5}", "5");
+		let mut s_daug2 = format!("{:^5}", "6");
+		let mut s_daug3 = format!("{:^5}", "7");
+		let mut s_daug4 = format!("{:^5}", "8");
+		let mut s_moth1 = format!("{:^5}", "1");
+		let mut s_moth2 = format!("{:^5}", "2");
+		let mut s_moth3 = format!("{:^5}", "3");
+		let mut s_moth4 = format!("{:^5}", "4");
+		
+		// Now we switch them "on" if the criteria match
+		if p_judge == p_right {
+			s_right = format!("{}{}{:^23}{}",
+				color::REVERSE, color::ORANGE, "Right", color::RESET);
+		}
+		if p_judge == p_left {
+			s_left = format!("{}{}{:^23}{}",
+				color::REVERSE, color::CYAN, "Left", color::RESET);
+		}
+		// nieces
+		if (p_judge == p_right) && (p_right == p_niec1) {
+			s_niec1 = format!("{}{}{:^11}{}",
+				color::REVERSE, color::RED, "9", color::RESET);
+		}
+		if (p_judge == p_right) && (p_right == p_niec2) {
+			s_niec2 = format!("{}{}{:^11}{}",
+				color::REVERSE, color::YELLOW, "10", color::RESET);
+		}
+		if (p_judge == p_left) && (p_left == p_niec3) {
+			s_niec3 = format!("{}{}{:^11}{}",
+				color::REVERSE, color::BLUE, "11", color::RESET);
+		}
+		if (p_judge == p_left) && (p_left == p_niec4) {
+			s_niec4 = format!("{}{}{:^11}{}",
+				color::REVERSE, color::GREEN, "12", color::RESET);
+		}
+		// mothers
+		if (p_judge == p_right) && (p_right == p_niec1)
+			&& (p_niec1 == p_moth1) {
+			s_moth1 = format!("{}{}{:^5}{}",
+				color::REVERSE,  color::RED, "1", color::RESET);
+		}
+		if (p_judge == p_right) && (p_right == p_niec1)
+			&& (p_niec1 == p_moth2) {
+			s_moth2 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::RED, "2", color::RESET);
+		}
+		if (p_judge == p_right) && (p_right == p_niec2)
+			&& (p_niec2 == p_moth3) {
+			s_moth3 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::YELLOW, "3", color::RESET);
+		}
+		if (p_judge == p_right) && (p_right == p_niec2)
+			&& (p_niec2 == p_moth4) {
+			s_moth4 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::YELLOW, "4", color::RESET);
+		}
+		// daughters
+		if (p_judge == p_left) && (p_left == p_niec3)
+			&& (p_niec3 == p_daug1) {
+			s_daug1 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::BLUE, "5", color::RESET);
+		}
+		if (p_judge == p_left) && (p_left == p_niec3)
+			&& (p_niec3 == p_daug2) {
+			s_daug2 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::BLUE, "6", color::RESET);
+		}
+		if (p_judge == p_left) && (p_left == p_niec4)
+			&& (p_niec4 == p_daug3) {
+			s_daug3 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::GREEN, "7", color::RESET);
+		}
+		if (p_judge == p_left) && (p_left == p_niec4)
+			&& (p_niec4 == p_daug4) {
+			s_daug4 = format!("{}{}{:^5}{}",
+				color::REVERSE, color::GREEN, "8", color::RESET);
+		}
 		// store our strings in a vector before printing them
 		let mut chart_panel :Vec<String> = vec![];
 		chart_panel.push( format!("┏{}━━━━━┓", "━━━━━┯".repeat(7)) );
 		
 		// 1-4 : mothers; 5-8 : daughters;
 		chart_panel.push(
-		format!("┃  8  │  7  │  6  │  5  │  4  │  3  │  2  │  1  ┃"));
+		format!("┃{}│{}│{}│{}│{}│{}│{}│{}┃",
+			s_daug4, s_daug3, s_daug2, s_daug1,
+			s_moth4, s_moth3, s_moth2, s_moth1));
 		
 		let m1 :&Figure = &self.figures[MOTHER];
 		let m2 :&Figure = &self.figures[MOTHER+1];
@@ -544,8 +650,8 @@ impl Chart <'_> {
 		}
 		
 		chart_panel.push(format!("┠{}─────┴─────┨", "─────┴─────┼".repeat(3)));
-		chart_panel.push(format!("┃{:^11}│{:^11}│{:^11}│{:^11}┃",
-			"12", "11", "10", "9"));
+		chart_panel.push(format!("┃{}│{}│{}│{}┃",
+			s_niec4, s_niec3, s_niec2, s_niec1));
 		
 		let n1 :&Figure = &self.figures[NIECE];
 		let n2 :&Figure = &self.figures[NIECE+1];
@@ -559,7 +665,7 @@ impl Chart <'_> {
 				x=color::RESET));
 		}
 		chart_panel.push(format!("┠{x}┴{x}┼{x}┴{x}┨", x="─".repeat(11)));
-		chart_panel.push(format!("┃{:^23}│{:^23}┃", "Left", "Right"));
+		chart_panel.push(format!("┃{}│{}┃", s_left, s_right));
 		
 		let c1 :&Figure = &self.figures[WITNESS];
 		let c2 :&Figure = &self.figures[WITNESS+1];
@@ -627,6 +733,7 @@ impl Chart <'_> {
 		for line in 0..chart_panel.len() {
 			println!("{}{}", chart_panel[line], name_panel[line]);
 		}
+		
 	}
 }
 
@@ -637,28 +744,23 @@ fn main() {
 	println!("\nLet's make a new chart!");
 	
 	let test:Chart = Chart::new(
-		[1, 2, 1, 1], [2, 2, 2, 2], [1, 1, 2, 2], [2, 2, 1, 1]);
+		[1, 2, 2, 1], [2, 1, 1, 2], [1, 1, 1, 2], [2, 1, 2, 2]);
 	
-	let judge = &test.figures[JUDGE];
-	judge.info();
 	test.draw_shield();
 	
-	println!("\nWay of Points simulation");
-	let wop = test.calculate_vp();
-	println!("{:?}", wop);
 	/*
 	//4 mothers are from user input
 	println!("\nCreating the first mother.");
-	let m1: [i32; 4] = figure_from_text();
+	let m1: [u32; 4] = figure_from_text();
 	
 	println!("\nCreating the second mother.");
-	let m2: [i32; 4] = figure_from_text();
+	let m2: [u32; 4] = figure_from_text();
 	
 	println!("\nCreating the third mother.");
-	let m3: [i32; 4] = figure_from_text();
+	let m3: [u32; 4] = figure_from_text();
 	
 	println!("\nCreating the fourth mother.");
-	let m4: [i32; 4] = figure_from_text();
+	let m4: [u32; 4] = figure_from_text();
 
 	println!("\nThe mothers are:\n{:?} {:?} {:?} {:?}",
 		m1, m2, m3, m4);
@@ -674,9 +776,9 @@ fn user_input() -> String {
 	answer
 }
 
-fn figure_from_text() -> [i32; 4] {
+fn figure_from_text() -> [u32; 4] {
 	println!("Please enter 4 lines of text.");
-	let mut output :[i32; 4] = [1, 1, 1, 1];
+	let mut output :[u32; 4] = [1, 1, 1, 1];
 	//Ask input and calculate the parity
 	for lin in 0..4 {
 		let input = user_input();
