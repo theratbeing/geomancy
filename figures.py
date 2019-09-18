@@ -141,6 +141,24 @@ class Figure(object):
         self.syms = f'{self.color["element"]}{self.element[0]} '\
             f'{self.color["planet"]}{self.planet[0]} '\
             f'{self.color["zodiac"]}{self.zodiac[0]}{Reset}'
+    
+    def info(self, expert=False):
+        ' expects a Figure object to work'
+        zod_a, zod_g = Virtue.Zodi_A[self.number], Virtue.Zodi_G[self.number]
+    
+        if expert:
+            print(f'{" "*7}{Style["underline"]}{self.name} ({self.number}){Reset}')
+            print(f' {self.shape[0]:^5} Element: {self.color["element"]}{self.element:<8}{Reset}')
+            print(f' {self.shape[1]:^5} Planet : {self.color["planet"]}{self.planet}{Reset}')
+            print(f' {self.shape[2]:^5} Zodiac : {Color.Zodiac[zod_g]}{zod_g}{Reset} (Gerardus), {Color.Zodiac[zod_a]}{zod_a}{Reset} (Agrippa)')
+            print(f' {self.shape[3]:^5} Mansion: {self.mansion}')
+            print(f'{" "*7}Meaning: {self.meaning}\n')
+    
+        else:
+            print(f' {self.shape[0]:^5} {Style["underline"]}{self.name} ({self.number}){Reset}')
+            print(f' {self.shape[1]:^5} Element: {self.color["element"]}{self.element:<8}{Reset}')
+            print(f' {self.shape[2]:^5} Planet : {self.color["planet"]}{self.planet}{Reset}')
+            print(f' {self.shape[3]:^5} Meaning: {self.meaning}\n')
 
 def link_figures(iterable):
     result = list()
@@ -180,21 +198,3 @@ def generate_complete_figures():
     for n in numbers:
         result.append(Figure(n))
     return result
-
-def figure_info(fo, expert=False):
-    ' expects a Figure object to work'
-    zod_a, zod_g = Virtue.Zodi_A[fo.number], Virtue.Zodi_G[fo.number]
-    
-    if expert:
-        print(f'{" "*7}{Style["underline"]}{fo.name} ({fo.number}){Reset}')
-        print(f' {fo.shape[0]:^5} Element: {fo.color["element"]}{fo.element:<8}{Reset}')
-        print(f' {fo.shape[1]:^5} Planet : {fo.color["planet"]}{fo.planet}{Reset}')
-        print(f' {fo.shape[2]:^5} Zodiac : {Color.Zodiac[zod_g]}{zod_g}{Reset} (Gerardus), {Color.Zodiac[zod_a]}{zod_a}{Reset} (Agrippa)')
-        print(f' {fo.shape[3]:^5} Mansion: {fo.mansion}')
-        print(f'{" "*7}Meaning: {fo.meaning}\n')
-    
-    else:
-        print(f' {fo.shape[0]:^5} {Style["underline"]}{fo.name} ({fo.number}){Reset}')
-        print(f' {fo.shape[1]:^5} Element: {fo.color["element"]}{fo.element:<8}{Reset}')
-        print(f' {fo.shape[2]:^5} Planet : {fo.color["planet"]}{fo.planet}{Reset}')
-        print(f' {fo.shape[3]:^5} Meaning: {fo.meaning}\n')

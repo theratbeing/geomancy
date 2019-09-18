@@ -161,7 +161,8 @@ def name_table():
         command = input('Please enter the figure\'s number or `r` to return: ')
         if command in number:
             print(' ')
-            figures.figure_info(figures.Figure(command), True)
+            fig = figures.Figure(command)
+            fig.info(True)
             input('Press Enter to continue...')
             return
         elif command == 'r' or command == 'R': return
