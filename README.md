@@ -1,6 +1,9 @@
 # geomancy.py
 Python script to generate charts used in geomancy divination method.
 
+### NOTICE
+If you can compile C please use ramli instead: https://github.com/theratbeing/ramli
+
 ### Features
 * Create shield chart and house chart manually or automatically.
 
